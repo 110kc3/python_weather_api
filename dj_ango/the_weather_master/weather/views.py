@@ -2,7 +2,7 @@ import requests
 from django.shortcuts import render
 from .models import City
 from .forms import CityForm
-
+import json
 
 #additional stuff - httpresponse
 from django.http import HttpResponse
@@ -10,39 +10,24 @@ from django.template import loader
 
 from django.http import Http404
 
-# def index(request):
+
+# def add_city_validation(request):
 #     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=4f651df2ff6276adea68dcbe6c969c94'
 
-#     # if request.method == 'POST':
-#     #     form = CityForm(request.POST)
-#     #     form.save()
+#     form = CityForm(request.POST)
+#     print("City is found\n")
+#     form.save()
+    
+#     r = request.get(url.format(city)).json()
+#     print(r)
+#     print( r['cod'])
+#     if  r['cod'] is "200":
+#         print("City found\n")
+#         return True
+#     else:
+#         print("City not found\n")
+#         return False
 
-#     form = CityForm()
-
-#     cities = City.objects.all()
-
-#     weather_data = []
-
-#     for city in cities:
-
-#         r = requests.get(url.format(city)).json()
-
-#         #{"cod":"404","message":"city not found"}k
-#         # if r['cod'] = '404':
-#         #     print("detcted 404")
-
-#         city_weather = {
-#             'city' : city.name,
-#             'temperature' : r['main']['temp'],
-#             'humidity' : r['main']['humidity'],
-#             'description' : r['weather'][0]['description'],
-#             'icon' : r['weather'][0]['icon'],
-#         }
-
-#         weather_data.append(city_weather)
-
-#     context = {'weather_data' : weather_data, 'form' : form}
-#     return render(request, 'weather/weather.html', context)
 
 
 def index(request):
@@ -50,15 +35,31 @@ def index(request):
     print("The request is: ")
     print(request)
     print("\n")
+    
     if request.method == 'POST':
-        print("Inside POST")
-        form = CityForm(request.POST)
-        if form.is_valid():
-            print("FORM IS VALID\n")
+        print(request.POST.get('name'))
+
+        city_to_check = request.POST.get('name')
+
+        #checking if specified city exists
+        check_for_city = requests.get(url.format(city_to_check))
+        
+        # check_for_city.raise_for_status() #for later - each exception handled?
+
+        # # check  and print type of num variable 
+        # print(type(check_for_city.status_code))  
+
+        converted_response = str(check_for_city.status_code)
+
+        print(converted_response)
+        if converted_response == "200":
+            form = CityForm(request.POST)
             form.save()
+            print("POST response is 200 - city exists")
         else:
-            print("FORM NOT VALID\n")
-            return HttpResponse("City not found")
+            print("POST response is not 200 - error:", converted_response)
+            # add some kind of communicate for wrong city
+            # return HttpResponse("City not found")
 
     form = CityForm()
 
@@ -69,10 +70,6 @@ def index(request):
     for city in cities:
 
         r = requests.get(url.format(city)).json()
-        
-        #{"cod":"404","message":"city not found"}k
-        # if r['cod'] = '404':
-        #     print("detcted 404")
 
         city_weather = {
             'city' : city.name,
