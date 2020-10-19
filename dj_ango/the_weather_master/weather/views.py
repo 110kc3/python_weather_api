@@ -2,9 +2,13 @@ import requests
 from django.shortcuts import render
 from .models import City
 from .forms import CityForm
+
+
+from .models import Pollution_station
+from .forms import StationForm
 import json
 
-#additional stuff - httpresponse
+# additional stuff - httpresponse
 from django.http import HttpResponse
 from django.template import loader
 
@@ -17,7 +21,7 @@ from django.http import Http404
 #     form = CityForm(request.POST)
 #     print("City is found\n")
 #     form.save()
-    
+
 #     r = request.get(url.format(city)).json()
 #     print(r)
 #     print( r['cod'])
@@ -29,25 +33,24 @@ from django.http import Http404
 #         return False
 
 
-
 def index(request):
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=4f651df2ff6276adea68dcbe6c969c94'
     print("The request is: ")
     print(request)
     print("\n")
-    
+
     if request.method == 'POST':
         print(request.POST.get('name'))
 
         city_to_check = request.POST.get('name')
 
-        #checking if specified city exists
+        # checking if specified city exists
         check_for_city = requests.get(url.format(city_to_check))
-        
+
         # check_for_city.raise_for_status() #for later - each exception handled?
 
-        # # check  and print type of num variable 
-        # print(type(check_for_city.status_code))  
+        # # check  and print type of num variable
+        # print(type(check_for_city.status_code))
 
         converted_response = str(check_for_city.status_code)
 
@@ -72,24 +75,40 @@ def index(request):
         r = requests.get(url.format(city)).json()
 
         city_weather = {
-            'city' : city.name,
-            'temperature' : r['main']['temp'],
-            'humidity' : r['main']['humidity'],
-            'description' : r['weather'][0]['description'],
-            'icon' : r['weather'][0]['icon'],
+            'city': city.name,
+            'temperature': r['main']['temp'],
+            'humidity': r['main']['humidity'],
+            'description': r['weather'][0]['description'],
+            'icon': r['weather'][0]['icon'],
         }
 
         weather_data.append(city_weather)
 
-    context = {'weather_data' : weather_data, 'form' : form}
+    # context = {'weather_data': weather_data, 'form': form}
+
+
+    # TODO: finish adding pollution data
+    station_form = StationForm()
+
+    stations = Pollution_station.objects.all()
+
+    pollution_data = []
+
+    # context_pollution = {'pollution_data': pollution_data,
+    #                      'station_form': station_form}
+
+    context = {'weather_data': weather_data, 'form': form,  # data from weather
+               'pollution_data': pollution_data, 'station_form': station_form}  # data from pollution
     return render(request, 'weather/weather.html', context)
+
 
 def detail(request, city_id):
     cities = City.objects.all()
-    city_name=cities[city_id].name
+    city_name = cities[city_id].name
 
     print(cities[city_id].name)
-    response = "You're looking at the detail of City: {} with ID: {} \n".format(city_name, city_id)
+    response = "You're looking at the detail of City: {} with ID: {} \n".format(
+        city_name, city_id)
     return HttpResponse(response)
 
 # def detail(request, city):
