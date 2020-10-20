@@ -1,0 +1,59 @@
+#!/bin/bash
+#Add script to file /etc/crontab as follow:#* *    * * *   root     #/root/supla-filesensors/var/script_name.sh#, then restart cron process: /etc/init.d/cron restart
+#folder_location=/root/supla-filesensors/var/weather	#set folder for for files with data 
+#*****************************************************************************************
+folder_location="."
+
+int=`date |cut -c23-24`
+int2=`date |cut -c23-24`
+if [ $int -eq 0 ]; then #this part of script will be executed every 10 minutes
+#Air temperature:
+curl -s 'http://api.openweathermap.org/data/2.5/weather?q=Szczecin,pl&units=metric&appid=YourAPI' | jq '.main.temp' > $folder_location/temp.txt
+#Sensed temperature
+curl -s 'http://api.openweathermap.org/data/2.5/weather?q=Szczecin,pl&units=metric&appid=YourAPI' | jq '.main.feels_like' > $folder_location/feels_like.txt
+#Humidity
+curl -s 'http://api.openweathermap.org/data/2.5/weather?q=Szczecin,pl&units=metric&appid=YourAPI' | jq '.main.humidity' > $folder_location/humidity.txt
+#Armospheric pressure hPa
+curl -s 'http://api.openweathermap.org/data/2.5/weather?q=Szczecin,pl&units=metric&appid=YourAPI' | jq '.main.pressure' > $folder_location/pressure.txt
+#Wind speed m/s
+curl -s 'http://api.openweathermap.org/data/2.5/weather?q=Szczecin,pl&units=metric&appid=YourAPI' | jq '.wind.speed' > $folder_location/wind_speed.txt
+#Wind direction
+curl -s 'http://api.openweathermap.org/data/2.5/weather?q=Szczecin,pl&units=metric&appid=YourAPI' | jq '.wind.deg' > $folder_location/wind_deg.txt
+#Cloud cover percentage %
+curl -s 'http://api.openweathermap.org/data/2.5/weather?q=Szczecin,pl&units=metric&appid=YourAPI' | jq '.clouds.all' > /root/supla-filesensors/var/weather/clouds.txt
+#Rainfall during last hour  mm - looks like not all stations share this value
+#curl -s http://api.openweathermap.org/data/2.5/weather?q=Szczecin,pl&units=metric&appid=YourAPI' | jq '.rain.1h' > /root/supla-filesensors/var/weather/rain_1h.txt
+cat /root/supla-filesensors/var/weather/temp.txt > "$folder_location/temp&humidity.txt";
+cat /root/supla-filesensors/var/weather/humidity.txt >> "$folder_location//temp&humidity.txt";
+else
+echo
+fi
+#Air pollution - PM1, PM2.5, PM10. Data updated every 15 minutes.
+if [ $int2 -eq 00 ] ; then
+  i=1
+elif [ $int2 -eq 15 ] ; then
+  i=1
+elif [ $int2 -eq 30 ] ; then
+  i=1
+elif [ $int2 -eq 45 ] ; then
+  i=1
+else
+  i=0
+fi
+sleep 4
+if [ $i -eq 1 ] ; then
+  AIRLY_DATA=$(curl -s 'https://airapi.airly.eu/v2/measurements/nearest?lat=52.54736&lng=12.95355&maxDistanceKM=10&apikey=YourAPI');
+  echo $AIRLY_DATA | jq '.current.values[] | select(.name=="PM25") | .value' > "$folder_location/PM25.txt"
+  echo $AIRLY_DATA | jq '.current.values[] | select(.name=="PM10") | .value' > "$folder_location/PM10.txt"
+  echo $AIRLY_DATA | jq '.current.values[] | select(.name=="PM1") | .value' > "$folder_location//PM1.txt"
+  PM1=`cat $folder_location/PM1.txt`;
+  echo "scale=2;$PM1*10" |bc > "$folder_location/PM1.txt"
+  PM25=`cat $folder_location/PM25.txt`;
+  echo "scale=2;$PM25*10" |bc > "$folder_location/PM25.txt"
+  PM10=`cat $folder_location/PM10.txt`;
+  echo "scale=2;$PM10*10" |bc > "$folder_location/PM10.txt"
+  cat $folder_location/PM25.txt > "$folder_location/PM25&PM10.txt";
+  cat $folder_location/PM10.txt >> "$folder_location/PM25&PM10.txt";
+else
+echo
+fi
