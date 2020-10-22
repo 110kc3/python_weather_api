@@ -46,3 +46,6 @@ curl -X GET \
     'https://airapi.airly.eu/v2/measurements/nearest?lat=50.289933901&lng=18.6597874761&maxDistanceKM=5' | json_pp
 	
 curl -s  $pollutionData | json_pp > pollutionData_file.json
+
+
+curl -s https://airapi.airly.eu/v2/measurements/nearest?lat=50.2&lng=18.2&maxDistanceKM=10&apikey=aV4cM5PIhRFvnfP4tiN1Cx2TAa8s1sf0 | json_pp
