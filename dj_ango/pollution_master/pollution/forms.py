@@ -1,4 +1,5 @@
 from django.forms import ModelForm, TextInput
+from django import forms
 from .models import City
 
 
@@ -12,11 +13,14 @@ class CityForm(ModelForm):
             attrs={'class': 'input', 'placeholder': 'City Name'})}
 
 
-# class StationForm(ModelForm):
-#     class Meta:
-#         model = City
-#         fields = ['city_latitude', 'city_longitude']
-#         widgets = {'city_latitude': NumberInput(attrs={'class': 'input', 'placeholder': 'Station latitude '}, 'city_longitude': NumberInput(attrs={'class': 'input', 'placeholder': 'Station longitude '})}
+class StationForm(ModelForm):
+    class Meta:
+        model = City
+        fields = ['city_name', 'city_latitude',
+                  'city_longitude', 'city_adding_date']
+
+        # widgets = {'city_latitude': forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Station latitude ', 'step': "0.01",  'label': 'Station'}), 'city_longitude': forms.NumberInput(
+        #     attrs={'class': 'input', 'placeholder': 'Station longitude ', 'step': "0.01"})}
 
 
 # class City(models.Model):

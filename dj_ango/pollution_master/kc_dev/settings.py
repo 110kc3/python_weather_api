@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'pollution.apps.PollutionConfig',
+    'widget_tweaks',
     'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',

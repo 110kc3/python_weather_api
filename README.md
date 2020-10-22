@@ -32,6 +32,8 @@ pip install Nominatim
 
 pip install requests
 
+pip install django-widget-tweaks
+
 
 4. Run django server locally (The development server)
 

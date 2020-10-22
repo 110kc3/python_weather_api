@@ -17,10 +17,6 @@ from geopy.geocoders import Nominatim
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the pollution index.")
-
-
-def index(request):
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=4f651df2ff6276adea68dcbe6c969c94'
     print("The request is: ")
     print(request)
@@ -69,7 +65,7 @@ def index(request):
         # print(type(check_for_city.status_code))
 
         converted_response = str(check_for_city.status_code)
-        print('City check response: ',converted_response)
+        print('City check response: ', converted_response)
 
         if converted_response == "200":
 
