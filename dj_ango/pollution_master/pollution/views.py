@@ -69,7 +69,7 @@ def index(request):
         # print(type(check_for_city.status_code))
 
         converted_response = str(check_for_city.status_code)
-        print('City check response: 'converted_response)
+        print('City check response: ',converted_response)
 
         if converted_response == "200":
 
