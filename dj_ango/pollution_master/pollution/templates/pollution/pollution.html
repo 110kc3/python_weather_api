@@ -8,6 +8,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
+
+
+    <!-- <style>
+        .content {
+          font-size: 120%;
+          background-color: red;
+        }
+    </style> -->
+
 </head>
 
 <body>
@@ -16,7 +25,7 @@
         <div class="hero-body">
             <div class="container">
                 <h1 class="title">
-                    What's the weather like?
+                    What's the air quality like?
                 </h1>
             </div>
         </div>
@@ -66,26 +75,37 @@
     </section>
     <section class="section">
         <div class="container">
-            <div class="columns">
+            <div class="columns" >
                 <div class="column is-offset-4 is-4">
                     {% for pollution_city in weather_data %}
                     <div class="box">
                         <article class="media">
                             <div class="media-left">
-                                <figure class="image is-50x50">
+                                <!-- <figure class="image is-50x50">
                                     <img src="http://openweathermap.org/img/w/{{ pollution_city.icon }}.png" alt="Image">
-                                </figure>
+                                </figure> -->
+                                <br>
                             </div>
                             <div class="media-content">
-                                <div class="content">
+                               
+                                <!-- TODO: implement background-color based on air quality -->
+                                <div class="content" style="border-radius: 10px;
+                                border: 1px solid rgb(83, 82, 82);"> 
                                     <p>
                                         <span class="title">{{ pollution_city.city_name }}</span>
-                                        <span class="title">{{ pollution_city.city_latitude }}</span>
-                                        <span class="title">{{ pollution_city.city_longitude }}</span>
+                                        <br>
+                                        Station Lat: {{ pollution_city.city_latitude }} Lng: {{ pollution_city.city_longitude }}
+                                        
                                         <br>
                                         <span class="subtitle">Temperature: {{ pollution_city.temperature }} °C</span>
                                         <br>
                                         <span class="subtitle">Humidity: {{ pollution_city.humidity }} %</span>
+
+                                        <br>
+                                        <span class="subtitle">PM 2.5: {{ pollution_city.pm2_5 }} µg/m^3</span>
+                                        <br>
+                                        <span class="subtitle">PM 10: {{ pollution_city.pm10 }} µg/m^3</span>
+
                                         <br> {{ pollution_city.description }}
                                     </p>
                                 </div>

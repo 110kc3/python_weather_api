@@ -88,6 +88,8 @@ def index(request):
             if form.is_valid():
                 print("form is valid")
 
+                #checking if there is data available at selected city
+
                 # data = form['city_latitude']
                 # print(data)
 
@@ -113,9 +115,11 @@ def index(request):
 
         print('requested url: ', airly_api_url.format(
             city.city_latitude, city.city_longitude))
-        # with open('recent_response.json', 'w') as outfile:
-        #     json.dump(r, outfile)
+        with open('recent_response.json', 'w') as outfile:
+            json.dump(r, outfile)
 
+
+        #r['current']['values'][1] have random indexes depending on the station...
         pollution_city = {
             'city_name': city.city_name,
             'city_latitude': city.city_latitude,
@@ -126,7 +130,7 @@ def index(request):
             'pm10': r['current']['values'][2]['value'],
 
             'description': r['current']['indexes'][0]['description'],
-            'icon': r['current']['indexes'][0]['color'],
+            'color': r['current']['indexes'][0]['color'],
         }
 
         print(pollution_city)
