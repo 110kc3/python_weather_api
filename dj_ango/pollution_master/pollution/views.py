@@ -30,8 +30,11 @@ def index(request):
     if request.method == 'POST':
 
         # if only city_name is provided, city latitude and longtidude is None
-        # print(request.POST.get('city_latitude')) #returns None
-
+        #
+        if request.POST.get('city_latitude') is None and request.POST.get('city_longitude') is None:
+            print("City latitude and longitude is None")
+        else:
+            print("City latitude and longitude is not None")
         # copying POST request because original QueryDict cannot be modified
         POST_copy = request.POST.copy()
 
@@ -40,15 +43,15 @@ def index(request):
         geolocator = Nominatim(user_agent="Your_Name")
         location = geolocator.geocode(address)
         print('printing location address: ', location.address)
-        print(('printing location latitude and longtitude: ',
-               location.latitude, location.longitude))
+        print('printing location latitude and longtitude: ',
+              location.latitude, location.longitude)
 
         city_latitude = location.latitude
         city_longitude = location.longitude
 
         # print('Printing city longtitude type: ', type(city_longitude))
-        city_latitude = format(city_latitude, '.4f')
-        city_longitude = round(city_longitude, 4)
+        city_latitude = format(city_latitude, '.6f')
+        city_longitude = round(city_longitude, 6)
         print('printing location latitude and longtitude after formating: ',
               city_latitude, city_longitude)
 
@@ -70,33 +73,48 @@ def index(request):
 
         if converted_response == "200":
 
-            # print('City latitude before form assigning: ',
-            #       POST_copy['city_latitude'])
+            # Checking if there is data available at selected city
 
-            pub_date = datetime.datetime.now()
-            print(pub_date)
-            POST_copy['city_adding_date'] = pub_date
+            check_for_city = check_for_city.json()
 
-            form = CityForm(POST_copy)
+            try:
+                # there are some sensors like: Zabrze that have only 4 indexes and none of them are temp/humid/pm
+                # for now getting rid of them not to cause an error
 
-            # print('City latitude after form assigning: ',
-            #       POST_copy['city_latitude'])
+                print(check_for_city['current']['values'][5]['value'])
+                # print(type((check_for_city['current']['values'][0]['value'])))
 
-            # print('City latitude after form assigning: ',
-            #       form['city_latitude'])
+            except:
+                print(
+                    "An exception occurred - sesnor does not contain data or data is corrupted")
 
-            if form.is_valid():
-                print("form is valid")
-
-                #checking if there is data available at selected city
-
-                # data = form['city_latitude']
-                # print(data)
-
-                form.save(commit=True)  # commiting our data to database
-                print("POST response is 200 - city exists")
             else:
-                print("form is not valid")
+
+                # print('City latitude before form assigning: ',
+                #       POST_copy['city_latitude'])
+
+                pub_date = datetime.datetime.now()
+                print(pub_date)
+                POST_copy['city_adding_date'] = pub_date
+
+                form = CityForm(POST_copy)
+
+                # print('City latitude after form assigning: ',
+                #       POST_copy['city_latitude'])
+
+                # print('City latitude after form assigning: ',
+                #       form['city_latitude'])
+
+                if form.is_valid():
+                    print("Form is valid - saving in DB")
+
+                    # data = form['city_latitude']
+                    # print(data)
+
+                    form.save(commit=True)  # commiting our data to database
+
+                else:
+                    print("form is not valid")
         else:
             print("POST response is not 200 - error:", converted_response)
             # add some kind of communicate for wrong city
@@ -118,8 +136,7 @@ def index(request):
         with open('recent_response.json', 'w') as outfile:
             json.dump(r, outfile)
 
-
-        #r['current']['values'][1] have random indexes depending on the station...
+        # r['current']['values'][1] have random indexes depending on the station...
         pollution_city = {
             'city_name': city.city_name,
             'city_latitude': city.city_latitude,
