@@ -21,7 +21,7 @@ def index(request):
 
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=4f651df2ff6276adea68dcbe6c969c94'
 
-    airly_api_url = 'https://airapi.airly.eu/v2/measurements/nearest?lat={}&lng={}&maxDistanceKM=30&apikey=' + pollution_API_key
+    airly_api_url = 'https://airapi.airly.eu/v2/measurements/nearest?lat={}&lng={}&maxDistanceKM=50&apikey=' + pollution_API_key
 
     print("The request is: ")
     print(request)
@@ -29,37 +29,61 @@ def index(request):
 
     if request.method == 'POST':
 
+        # copying POST request because original QueryDict cannot be modified
+        POST_copy = request.POST.copy()
+
         # if only city_name is provided, city latitude and longtidude is None
         #
         if request.POST.get('city_latitude') is None and request.POST.get('city_longitude') is None:
             print("City latitude and longitude is None")
+
+            # Getting approximate coordinates for user selected city - seems that this api is sometimes not working (api itself is getting 500 errors)
+            try:
+                address = request.POST.get('city_name')
+                geolocator = Nominatim(user_agent="Your_Name")
+                location = geolocator.geocode(address)
+                print('printing location address: ', location.address)
+                print('printing location latitude and longtitude: ',
+                      location.latitude, location.longitude)
+
+                city_latitude = location.latitude
+                city_longitude = location.longitude
+
+                # print('Printing city longtitude type: ', type(city_longitude))
+                city_latitude = format(city_latitude, '.6f')
+                city_longitude = round(city_longitude, 6)
+                print('printing location latitude and longtitude after formating: ',
+                      city_latitude, city_longitude)
+
+                POST_copy['city_latitude'] = city_latitude
+                POST_copy['city_longitude'] = city_longitude
+
+                print(POST_copy['city_name'])
+                print(POST_copy['city_latitude'])
+            except:
+                print('Geolocator API problem...')
+
         else:
             print("City latitude and longitude is not None")
-        # copying POST request because original QueryDict cannot be modified
-        POST_copy = request.POST.copy()
 
-        # Getting approximate coordinates for user selected city - seems that this api is sometimes not working (api itself is getting 500 errors)
-        address = request.POST.get('city_name')
-        geolocator = Nominatim(user_agent="Your_Name")
-        location = geolocator.geocode(address)
-        print('printing location address: ', location.address)
-        print('printing location latitude and longtitude: ',
-              location.latitude, location.longitude)
+            city_latitude = request.POST.get('city_latitude')
+            city_longitude = request.POST.get('city_longitude')
 
-        city_latitude = location.latitude
-        city_longitude = location.longitude
+            print('printing location latitude and longtitude: ',
+                  city_latitude, city_longitude)
 
-        # print('Printing city longtitude type: ', type(city_longitude))
-        city_latitude = format(city_latitude, '.6f')
-        city_longitude = round(city_longitude, 6)
-        print('printing location latitude and longtitude after formating: ',
-              city_latitude, city_longitude)
+            try:
+                geolocator = Nominatim(user_agent="geoapiExercises")
+                coordinates = city_latitude + ", " + city_longitude
+                print(coordinates)
+                ####################################################################
+                location = geolocator.reverse(coordinates, exactly_one=True)
+                address = location.raw['address']
+                city_geolocation = address.get('city', '')
 
-        POST_copy['city_latitude'] = city_latitude
-        POST_copy['city_longitude'] = city_longitude
-
-        print(POST_copy['city_name'])
-        print(POST_copy['city_latitude'])
+                POST_copy['city_name'] = city_geolocation
+            except:
+                print('Geolocator API problem...')
 
         # checking if specified city exists (is in API)
 
@@ -76,6 +100,8 @@ def index(request):
             # Checking if there is data available at selected city
 
             check_for_city = check_for_city.json()
+            with open('response_check.json', 'w') as outfile:
+                json.dump(check_for_city, outfile)
 
             try:
                 # there are some sensors like: Zabrze that have only 4 indexes and none of them are temp/humid/pm
