@@ -188,3 +188,10 @@ def index(request):
     context = {'weather_data': weather_data,
                'form': form}  # data from weather
     return render(request, 'pollution/pollution.html', context)
+
+
+def custom(request):
+    response = "You're looking at the custom station index."
+    return HttpResponse(response)
+    #   response = "You're looking at the custom station index."
+    # return render(request, 'custom/custom.html', response)
