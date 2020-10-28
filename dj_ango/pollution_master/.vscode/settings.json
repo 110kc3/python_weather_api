@@ -1,5 +1,6 @@
 {
     "prettier.printWidth": 300,
     "editor.wordWrapColumn": 200,
-    "prettier.configPath": "D:\\repos\\.prettierrc.json"
+    "prettier.configPath": "D:\\repos\\.prettierrc.json",
+    "html.validate.styles": false
 }

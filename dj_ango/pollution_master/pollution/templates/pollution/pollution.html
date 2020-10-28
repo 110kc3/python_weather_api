@@ -1,4 +1,7 @@
 {% load widget_tweaks %}
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,8 +10,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
 
+    <!-- template tag that generates the absolute URL of static files.
+    {% load static %} 
+
+    <link rel="stylesheet" type="text/css" href="{% static 'pollution/style.css' %}"> -->
 
     <!-- <style>
         .content {
@@ -89,8 +98,10 @@
                             <div class="media-content">
                                
                                 <!-- TODO: implement background-color based on air quality -->
-                                <div class="content" style="border-radius: 10px;
-                                border: 1px solid rgb(83, 82, 82);"> 
+                                <!-- <div class="content" style="border-radius: 10px;
+                                border: 1px solid rgb(83, 82, 82);">  -->
+                                <div class="content" style="border-radius: 10px; background-color: {{ pollution_city.color }};"> 
+
                                     <p>
                                         <span class="title">{{ pollution_city.city_name }}</span>
                                         <br>
