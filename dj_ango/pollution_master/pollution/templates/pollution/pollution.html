@@ -14,17 +14,54 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
 
-    <!-- template tag that generates the absolute URL of static files.
-    {% load static %} 
+    <!-- template tag that generates the absolute URL of static files. -->
+    <!-- {% load static %} 
 
-    <link rel="stylesheet" type="text/css" href="{% static 'pollution/style.css' %}"> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'pollution/style.css' %}">  -->
 
-    <!-- <style>
-        .content {
-          font-size: 120%;
-          background-color: red;
+    <style>
+      dfn {
+        
+        
+        padding: 0 0.4em;
+        cursor: help;
+        font-style: normal;
+        position: relative;
         }
-    </style> -->
+        dfn::after {
+        content: attr(data-info);
+        display: inline;
+        position: absolute;
+        top: 22px; left: 0;
+        opacity: 0;
+        width: 230px;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.5em;
+        padding: 0.5em 0.8em;
+        background: rgba(0,0,0,0.8);
+        color: #fff;
+        pointer-events: none; /* This prevents the box from apearing when hovered. */
+        transition: opacity 250ms, top 250ms;
+        }
+        dfn::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 12px; left: 20px;
+        opacity: 0;
+        width: 0; height: 0;
+        border: solid transparent 5px;
+        border-bottom-color: rgba(0,0,0,0.8);
+        transition: opacity 250ms, top 250ms;
+        }
+        dfn:hover {z-index: 2;} /* Keeps the info boxes on top of other elements */
+        dfn:hover::after,
+        dfn:hover::before {opacity: 1;}
+        dfn:hover::after {top: 30px;}
+        dfn:hover::before {top: 20px;}
+
+    </style>
 
 </head>
 
@@ -42,7 +79,7 @@
     <section class="section">
         <div class="container">
             <div class="columns">
-                <div class="column  is-4">
+                <div class="column  is-one-third">
                     <form method="POST">
                         {% csrf_token %}
                         <div class="field has-addons">
@@ -78,6 +115,13 @@
                         </div>
                     </form>
                 </div>
+                <!-- <a class="btn btn-primary" href="/admin">Text redirect</a> -->
+                <div class="column is-one-third ">
+                    <button class="button is-success"><a href="/pollution/custom"> <dfn data-info="Get data from your custom stations">Custom</dfn></a></button>
+
+                    
+                </div>
+                <!-- <input type="checkbox" id="scales" name="scales" checked> -->
             </div>
             
         </div>

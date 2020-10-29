@@ -191,7 +191,7 @@ def index(request):
 
 
 def custom(request):
+    # response = "You're looking at the custom station index."
+    # return HttpResponse(response)
     response = "You're looking at the custom station index."
-    return HttpResponse(response)
-    #   response = "You're looking at the custom station index."
-    # return render(request, 'custom/custom.html', response)
+    return render(request, 'custom/custom.html')
