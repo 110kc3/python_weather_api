@@ -9,6 +9,8 @@ import datetime
 from .models import City
 from .forms import CityForm
 
+from .models import Custom_station
+from .forms import CustomStationForm
 
 import json
 from geopy.geocoders import Nominatim
@@ -191,7 +193,86 @@ def index(request):
 
 
 def custom(request):
-    # response = "You're looking at the custom station index."
-    # return HttpResponse(response)
-    response = "You're looking at the custom station index."
-    return render(request, 'custom/custom.html')
+
+    # the request for sensor data is at http://192.168.0.29:8082/data
+
+    url_for_data = 'http://{}:{}/data'
+    url_for_response_check = 'http://{}:{}'
+
+    print("The request is: ")
+    print(request)
+    print("\n")
+
+    if request.method == 'POST':
+
+        # copying POST request because original QueryDict cannot be modified
+        POST_copy = request.POST.copy()
+
+        print('The post request is: ', POST_copy)
+        print(request.POST.get('station_ip'), request.POST.get('station_port'))
+
+        check_for_response = requests.get(
+            url_for_response_check.format(request.POST.get('station_ip'), request.POST.get('station_port')))
+
+        # check_for_city.raise_for_status() #for later - each exception handled?
+
+        converted_response = str(check_for_response.status_code)
+        print('City check response: ', converted_response)
+
+        if converted_response == "200":
+
+            pub_date = datetime.datetime.now()
+            print(pub_date)
+            POST_copy['station_adding_date'] = pub_date
+
+            form = CustomStationForm(POST_copy)
+
+            if form.is_valid():
+                print("Form is valid - saving in DB")
+
+                form.save(commit=True)  # commiting our data to database
+
+            else:
+                print("form is not valid")
+        else:
+            print("POST response is not 200 - error:", converted_response)
+            # add some kind of communicate for wrong city
+            # return HttpResponse("City not found")
+
+    form = CustomStationForm()
+
+    stations = Custom_station.objects.all()
+
+    weather_data_custom = []
+
+    for station in stations:
+
+        r = requests.get(url_for_data.format(
+            station.station_ip, station.station_port)).json()
+
+        print('requested url: ', url_for_data.format(
+            station.station_ip, station.station_port))
+        with open('recent_response_station.json', 'w') as outfile:
+            json.dump(r, outfile)
+
+        # r['current']['values'][1] have random indexes depending on the station...
+        pollution_custom_station_data = {
+            'city_name': r['current']['indexes'][0]['stationcity'],
+            'station_ip': station.station_ip,
+            'station_port': station.station_port,
+            'temperature': r['current']['values'][5]['value'],
+            'humidity': r['current']['values'][4]['value'],
+            'pm2_5': r['current']['values'][1]['value'],
+            'pm10': r['current']['values'][2]['value'],
+
+            'description': r['current']['indexes'][0]['description'],
+            'color': r['current']['indexes'][0]['color'],
+        }
+
+        print(pollution_custom_station_data)
+        weather_data_custom.append(pollution_custom_station_data)
+
+    context = {'weather_data_custom': weather_data_custom,
+               'form': form}  # data from weather
+
+    return render(request, 'custom/custom.html', context)

@@ -14,7 +14,7 @@ from django.utils import timezone
 
 class City(models.Model):
     city_name = models.CharField(max_length=40)
-    
+
     city_latitude = models.FloatField(
         validators=[MinValueValidator(-90), MaxValueValidator(90)])
     city_longitude = models.FloatField(
@@ -33,6 +33,14 @@ class City(models.Model):
         return self.city_adding_date >= timezone.now() - datetime.timedelta(days=1)
 
 
+class Custom_station(models.Model):
+    station_ip = models.GenericIPAddressField()
+    station_port = models.IntegerField()
+
+    station_adding_date = models.DateTimeField('date added')
+
+    def was_added_recently(self):
+        return self.city_adding_date >= timezone.now() - datetime.timedelta(days=1)
 # class Coordinates(models.Model):
 #     question = models.ForeignKey(City, on_delete=models.CASCADE)
 #     choice_text = models.CharField(max_length=200)

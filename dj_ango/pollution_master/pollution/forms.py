@@ -1,6 +1,7 @@
 from django.forms import ModelForm, TextInput
 from django import forms
 from .models import City
+from .models import Custom_station
 
 
 class CityForm(ModelForm):
@@ -22,6 +23,11 @@ class StationForm(ModelForm):
         # widgets = {'city_latitude': forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Station latitude ', 'step': "0.01",  'label': 'Station'}), 'city_longitude': forms.NumberInput(
         #     attrs={'class': 'input', 'placeholder': 'Station longitude ', 'step': "0.01"})}
 
+
+class CustomStationForm(ModelForm):
+    class Meta:
+        model = Custom_station
+        fields = ['station_ip', 'station_port', 'station_adding_date']
 
 # class City(models.Model):
 #     city_name = models.CharField(max_length=40)

@@ -36,8 +36,33 @@
                 <div class="column  is-4">
 
                 </div>
-                <!-- POST for pollution -->
+                 <!-- POST for pollution -->
+                 <div class="column is-one-third ">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <!-- {{ form.city_latitude }} -->
+                                {% render_field form.station_ip class="input" placeholder="Station ip" %}
+                            </div>
+                            <div class="control is-expanded">
+                                <!-- {{ form.city_longitude }} -->
+                                {% render_field form.station_port class="input" placeholder="Station port" %}
+                            </div>
+                            <div class="control">
+                                <button type="submit" class="button is-info" name ="add_station_button">
+                                    Add Station
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                 <!-- <a class="btn btn-primary" href="/admin">Text redirect</a> -->
                 <div class="column is-one-third ">
+                    <button class="button is-success"><a href="/pollution"> <dfn data-info="Get data from public stations">Basic</dfn></a></button>
+
+                    
+                </div>
 
                 </div>
             </div>
@@ -48,7 +73,7 @@
         <div class="container">
             <div class="columns" >
                 <div class="column is-offset-4 is-4">
-                    {% for pollution_city in weather_data %}
+                    {% for pollution_custom_station in weather_data_custom %}
                     <div class="box">
                         <article class="media">
                             <div class="media-left">
@@ -60,24 +85,24 @@
                             <div class="media-content">
                                
                                 <!-- TODO: implement background-color based on air quality -->
-                                <div class="content" style="border-radius: 10px;
-                                border: 1px solid rgb(83, 82, 82);"> 
+                                <div class="content" style="border-radius: 10px; background-color: {{ pollution_custom_station.color }};"> 
                                     <p>
-                                        <!-- <span class="title">{{ pollution_city.city_name }}</span>
+                                        <span class="title">{{ pollution_custom_station.city_name }}</span>
                                         <br>
-                                        Station Lat: {{ pollution_city.city_latitude }} Lng: {{ pollution_city.city_longitude }}
-                                        
+                            
+                                        Station ip: {{ pollution_custom_station.station_ip }}:{{ pollution_custom_station.station_port }}
+                                     
                                         <br>
-                                        <span class="subtitle">Temperature: {{ pollution_city.temperature }} °C</span>
+                                        <span class="subtitle">Temperature: {{ pollution_custom_station.temperature }} °C</span>
                                         <br>
-                                        <span class="subtitle">Humidity: {{ pollution_city.humidity }} %</span>
+                                        <span class="subtitle">Humidity: {{ pollution_custom_station.humidity }} %</span>
 
                                         <br>
-                                        <span class="subtitle">PM 2.5: {{ pollution_city.pm2_5 }} µg/m^3</span>
+                                        <span class="subtitle">PM 2.5: {{ pollution_custom_station.pm2_5 }} µg/m^3</span>
                                         <br>
-                                        <span class="subtitle">PM 10: {{ pollution_city.pm10 }} µg/m^3</span>
+                                        <span class="subtitle">PM 10: {{ pollution_custom_station.pm10 }} µg/m^3</span>
 
-                                        <br> {{ pollution_city.description }} -->
+                                        <br> {{ pollution_custom_station.description }}
                                     </p>
                                 </div>
                             </div>
