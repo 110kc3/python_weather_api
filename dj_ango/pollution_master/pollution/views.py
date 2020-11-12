@@ -114,7 +114,7 @@ def index(request):
 
             except:
                 print(
-                    "An exception occurred - sesnor does not contain data or data is corrupted")
+                    "An exception occurred - sensor does not contain data or data is corrupted")
 
             else:
 
@@ -255,7 +255,6 @@ def custom(request):
         with open('recent_response_station.json', 'w') as outfile:
             json.dump(r, outfile)
 
-        # r['current']['values'][1] have random indexes depending on the station...
         pollution_custom_station_data = {
             'city_name': r['current']['indexes'][0]['stationcity'],
             'station_ip': station.station_ip,
