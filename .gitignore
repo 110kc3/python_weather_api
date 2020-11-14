@@ -2,3 +2,7 @@
 dj_ango/pollution_master/pollution/__pycache__
 env
 dj_ango/pollution_master/pollution/migrations/__pycache__
+dj_ango/pollution_master/kc_dev/__pycache__
+dj_ango/pollution_master/polls/__pycache__
+dj_ango/pollution_master/polls/migrations/__pycache__
+dj_ango/pollution_master/recent_response.json
