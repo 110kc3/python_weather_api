@@ -15,6 +15,8 @@ from .forms import CustomStationForm
 import json
 from geopy.geocoders import Nominatim
 
+from django.contrib import messages 
+
 # Create your views here.
 
 
@@ -64,6 +66,7 @@ def index(request):
                 print(POST_copy['city_latitude'])
             except:
                 print('Geolocator API problem...')
+                messages.info(request, 'An exception occurred - Geolocator API problem')    
 
         else:
             print("City latitude and longitude is not None")
@@ -86,6 +89,8 @@ def index(request):
                 POST_copy['city_name'] = city_geolocation
             except:
                 print('Geolocator API problem...')
+                messages.info(request, 'An exception occurred - Geolocator API problem')    
+                
 
         # checking if specified city exists (is in API)
 
@@ -113,8 +118,8 @@ def index(request):
                 # print(type((check_for_city['current']['values'][0]['value'])))
 
             except:
-                print(
-                    "An exception occurred - sensor does not contain data or data is corrupted")
+                print("An exception occurred - sensor does not contain data or data is corrupted")
+                messages.info(request, 'An exception occurred - sensor does not contain data or data is corrupted')    
 
             else:
 
@@ -135,7 +140,7 @@ def index(request):
 
                 if form.is_valid():
                     print("Form is valid - saving in DB")
-
+                    messages.info(request, 'Received good response, adding to Database')
                     # data = form['city_latitude']
                     # print(data)
 
@@ -143,8 +148,10 @@ def index(request):
 
                 else:
                     print("form is not valid")
+                    messages.info(request, 'Form is not valid')
         else:
             print("POST response is not 200 - error:", converted_response)
+            messages.info(request, 'POST response is not 200 - error:', converted_response)
             # add some kind of communicate for wrong city
             # return HttpResponse("City not found")
 
@@ -155,6 +162,7 @@ def index(request):
     weather_data = []
 
     for city in cities:
+        
 
         r = requests.get(airly_api_url.format(
             city.city_latitude, city.city_longitude)).json()
@@ -229,13 +237,16 @@ def custom(request):
 
             if form.is_valid():
                 print("Form is valid - saving in DB")
-
+                messages.info(request, 'Received good response, adding to Database')
                 form.save(commit=True)  # commiting our data to database
+                
 
             else:
                 print("form is not valid")
+                messages.info(request, 'Form is not valid')
         else:
             print("POST response is not 200 - error:", converted_response)
+            messages.info(request, 'POST response is not 200 - error:', converted_response)
             # add some kind of communicate for wrong city
             # return HttpResponse("City not found")
 
