@@ -258,13 +258,34 @@ def custom(request):
 
     for station in stations:
 
-        r = requests.get(url_for_data.format(
-            station.station_ip, station.station_port)).json()
+        try:
+            r = requests.get(url_for_data.format(station.station_ip, station.station_port)).json()
+        except: #if station is not sending data
+            print('Request failed')
+            messages.info(request, 'Problem with accessing custom station data, please check if it is working or specified ip is correct')
+
+            pollution_custom_station_data = {
+                'city_name': 'Error',
+                'station_ip': station.station_ip,
+                'station_port': station.station_port,
+                'temperature': 0,
+                'humidity': 0,
+                'pm2_5': 0,
+                'pm10': 0,
+
+                'description': 'Error getting data',
+                'color': '#ffffff',
+            }
+            print(pollution_custom_station_data)
+            weather_data_custom.append(pollution_custom_station_data)
+
+            break
+        
 
         print('requested url: ', url_for_data.format(
             station.station_ip, station.station_port))
-        with open('recent_response_station.json', 'w') as outfile:
-            json.dump(r, outfile)
+        # with open('recent_response_station.json', 'w') as outfile:
+        #     json.dump(r, outfile)
 
         pollution_custom_station_data = {
             'city_name': r['current']['indexes'][0]['stationcity'],
