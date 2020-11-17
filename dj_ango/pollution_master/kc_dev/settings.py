@@ -28,10 +28,18 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+#Crispy Forms - configure what css framework it will use
+CRISPY_TEMPLATE_PACK="bulma"
+
+# #Enabling custom User model
+# AUTH_USER_MODEL = 'register.User'
+
 # Application definition
 
 INSTALLED_APPS = [
     'pollution.apps.PollutionConfig',
+    'register.apps.RegisterConfig',
+    "crispy_forms",
     'widget_tweaks',
     'polls.apps.PollsConfig',
     'django.contrib.admin',
