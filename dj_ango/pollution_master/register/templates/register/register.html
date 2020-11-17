@@ -1,12 +1,20 @@
-{% extends "main/base.html" %}
+
+
+{% extends "pollution/base.html" %}
 
 {% block title %}Create an Account{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <form method="POST" class="form-group">
+	<form method="POST" class="form-group">
 	{% csrf_token %}
-	{{ form|crispy }}
-	<button type="submit" class="btn btn-success">Register</button>
-    </form>
+	{{ u_form|crispy }}
+	{{ p_form|crispy }}
+	<button type="submit" class="button is-info">Register</button>
+	</form>
 {% endblock %}
+
+
+
+
+							

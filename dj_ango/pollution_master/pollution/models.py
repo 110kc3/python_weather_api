@@ -39,6 +39,10 @@ class Custom_station(models.Model):
 
     station_adding_date = models.DateTimeField('date added')
 
+    class Meta:
+        verbose_name = "station"
+        verbose_name_plural = 'stations'
+
     def was_added_recently(self):
         return self.city_adding_date >= timezone.now() - datetime.timedelta(days=1)
 # class Coordinates(models.Model):

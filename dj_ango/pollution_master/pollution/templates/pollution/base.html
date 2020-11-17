@@ -1,0 +1,194 @@
+{% load widget_tweaks %}
+
+<!doctype html>
+<html>
+
+	<!DOCTYPE html>
+	<html lang="en">
+	
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		
+		<title>{% block title %}Document{% endblock %}</title>
+	
+		<!-- <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-all.min.css"> -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
+	
+		<!-- Modal - infobox onclick -->
+		<script src = "https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+		<script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	
+		<!-- template tag that generates the absolute URL of static files. -->
+		<!-- {% load static %} 
+	
+		<link rel="stylesheet" type="text/css" href="{% static 'pollution/style.css' %}">  -->
+	
+		<style>
+		  dfn {
+			padding: 0 0.4em;
+			cursor: help;
+			font-style: normal;
+			position: relative;
+			}
+			dfn::after {
+			content: attr(data-info);
+			display: inline;
+			position: absolute;
+			top: 22px; left: 0;
+			opacity: 0;
+			width: 230px;
+			font-size: 13px;
+			font-weight: 700;
+			line-height: 1.5em;
+			padding: 0.5em 0.8em;
+			background: rgba(0,0,0,0.8);
+			color: #fff;
+			pointer-events: none; /* This prevents the box from apearing when hovered. */
+			transition: opacity 250ms, top 250ms;
+			}
+			dfn::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 12px; left: 20px;
+			opacity: 0;
+			width: 0; height: 0;
+			border: solid transparent 5px;
+			border-bottom-color: rgba(0,0,0,0.8);
+			transition: opacity 250ms, top 250ms;
+			}
+			dfn:hover {z-index: 2;} /* Keeps the info boxes on top of other elements */
+			dfn:hover::after,
+			dfn:hover::before {opacity: 1;}
+			dfn:hover::after {top: 30px;}
+			dfn:hover::before {top: 20px;}
+	
+		</style>
+	
+
+	
+</head>
+ 
+<body>
+
+	<body>
+		<section class="hero is-dark"> 
+			<!-- is-info also cool -->
+			<div class="hero-body">
+				<div class="container">
+					<h1 class="title">
+						What's the air quality like? </h1>
+						<div class = "container">
+						
+						   
+							   <a class = "button is-right is-primary modal-button" data-target="#modal">What is this</a>
+							
+							<div id="modal" class = "modal">
+							   <div class = "modal-background"></div>
+							   <div class = "modal-content">
+								  <div class = "box">
+									 <article class = "media">
+										<div class = "media-left">
+										   <figure class = "image is-64x64">
+											  <img src = "https://www.tutorialspoint.com/bootstrap/images/64.jpg" alt="Image">
+										   </figure>
+										</div>
+										<div class = "media-content">
+											<div class = "content">
+												<h1>What this does</h1>
+												<p>This is application takes different stations data and displays it. You can specify and add stations.</p>
+												<h2>Adding public station </h2>
+												<p>How to add station</p>
+												
+												<h3>Custom station configuration</h3>
+												<p>How to configure your station to work with this application</p>
+												<h3>Adding custom station</h3>
+												<p>Go to Custom button</p>
+												<h5>Links</h5>
+												<p>GIT.</p>
+												</ul>
+											 </div>
+											 <!-- Add icons for Git or other stuff? -->
+										   <!-- <nav class = "level">
+											  <div class = "level-left">
+												 <a class = "level-item">
+												 <span class = "icon is-small"><i class = "fa fa-reply"></i></span>
+												 </a>
+												 <a class = "level-item">
+												 <span class = "icon is-small"><i class = "fa fa-retweet"></i></span>
+												 </a>
+											  </div>
+										   </nav> -->
+										</div>
+									 </article>
+								  </div>
+							   </div>
+							   <button class = "modal-close is-large" aria-label="close"></button>
+							</div>
+				
+				
+							<script>
+								$(".modal-button").click(function() {
+								var target = $(this).data("target");
+								$("html").addClass("is-clipped");
+								$(target).addClass("is-active");
+								});
+								
+								$(".modal-close").click(function() {
+								$("html").removeClass("is-clipped");
+								$(this).parent().removeClass("is-active");
+								});
+							 </script>
+					
+				</div>
+			</div>
+		</section>
+
+
+		<section class = "hero is-info">
+			<div class = "container">
+			   <h2 class = "subtitle">
+				 {% if messages %}
+				 <ul class="messages">
+					 {% for message in messages %}
+					 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					 {% endfor %}
+				 </ul>
+				 {% endif %}
+ 
+				 <!-- JS script to make messages disapear after some time -->
+				 <script
+					 src="https://code.jquery.com/jquery-3.4.1.min.js"
+					 integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+					 crossorigin="anonymous"></script>
+ 
+					 <script text="javascript">
+						 setTimeout(fade_out, 3000);
+						 function fade_out() {
+							 $(".messages").fadeOut().empty();
+						 }
+						 // $(".post-form")[0].reset(); // this is to reset the form 
+				 </script> 
+			   </h2>
+		 </div>
+	  </section>
+
+	
+
+	  <div class="columns is-half is-centered">
+		<div class="column is-half">
+		  <p class="bd-notification is-primary">
+			{% block content %}
+			{% endblock %}
+		  </p>
+		</div>
+
+		
+
+
+
+</body>
+
+</html>

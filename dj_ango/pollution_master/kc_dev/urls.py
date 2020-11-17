@@ -20,9 +20,10 @@ from django.urls import path, include
 urlpatterns = [
 
     # include() function allows referencing other URLconfs - this time we are referencing polls at ../polls
-    path('polls/', include('polls.urls')),
+
     path('pollution/', include('pollution.urls')),
     path('admin/', admin.site.urls),
-    path("register/", include('register.urls')),  
+    path("register/", include('register.urls')),
+    path('', include("django.contrib.auth.urls")),  # <-- added
 
 ]
