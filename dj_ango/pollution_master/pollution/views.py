@@ -12,15 +12,24 @@ from .forms import CityForm
 from .models import Custom_station
 from .forms import CustomStationForm
 
+from .models import User
+
+from django.contrib.auth.models import User
+
 import json
 from geopy.geocoders import Nominatim
 
-from django.contrib import messages 
+from django.contrib import messages
+
+
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 
+@login_required
 def index(request):
+
     pollution_API_key = 'aV4cM5PIhRFvnfP4tiN1Cx2TAa8s1sf0'
 
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=4f651df2ff6276adea68dcbe6c969c94'
@@ -66,7 +75,8 @@ def index(request):
                 print(POST_copy['city_latitude'])
             except:
                 print('Geolocator API problem...')
-                messages.info(request, 'An exception occurred - Geolocator API problem')    
+                messages.info(
+                    request, 'An exception occurred - Geolocator API problem')
 
         else:
             print("City latitude and longitude is not None")
@@ -89,8 +99,8 @@ def index(request):
                 POST_copy['city_name'] = city_geolocation
             except:
                 print('Geolocator API problem...')
-                messages.info(request, 'An exception occurred - Geolocator API problem')    
-                
+                messages.info(
+                    request, 'An exception occurred - Geolocator API problem')
 
         # checking if specified city exists (is in API)
 
@@ -118,8 +128,10 @@ def index(request):
                 # print(type((check_for_city['current']['values'][0]['value'])))
 
             except:
-                print("An exception occurred - sensor does not contain data or data is corrupted")
-                messages.info(request, 'An exception occurred - sensor does not contain data or data is corrupted')    
+                print(
+                    "An exception occurred - sensor does not contain data or data is corrupted")
+                messages.info(
+                    request, 'An exception occurred - sensor does not contain data or data is corrupted')
 
             else:
 
@@ -130,6 +142,10 @@ def index(request):
                 print(pub_date)
                 POST_copy['city_adding_date'] = pub_date
 
+                POST_copy['user'] = request.user.id
+
+                print(request.user.id)
+                print(POST_copy['user'])
                 form = CityForm(POST_copy)
 
                 # print('City latitude after form assigning: ',
@@ -140,9 +156,8 @@ def index(request):
 
                 if form.is_valid():
                     print("Form is valid - saving in DB")
-                    messages.info(request, 'Received good response, adding to Database')
-                    # data = form['city_latitude']
-                    # print(data)
+                    messages.info(
+                        request, 'Received good response, adding to Database')
 
                     form.save(commit=True)  # commiting our data to database
 
@@ -151,7 +166,8 @@ def index(request):
                     messages.info(request, 'Form is not valid')
         else:
             print("POST response is not 200 - error:", converted_response)
-            messages.info(request, 'POST response is not 200 - error:', converted_response)
+            messages.info(
+                request, 'POST response is not 200 - error:', converted_response)
             # add some kind of communicate for wrong city
             # return HttpResponse("City not found")
 
@@ -161,39 +177,44 @@ def index(request):
 
     weather_data = []
 
+    # print every city with id=request.user.id
+
     for city in cities:
-        
+        print('I am user with id', request.user.id,
+              'requesting data from city with user id of', city.user.id)
 
-        r = requests.get(airly_api_url.format(
-            city.city_latitude, city.city_longitude)).json()
+        # restrict view of cities not added by specific user
+        if request.user.id is city.user.id:
+            r = requests.get(airly_api_url.format(
+                city.city_latitude, city.city_longitude)).json()
 
-        print('requested url: ', airly_api_url.format(
-            city.city_latitude, city.city_longitude))
-        with open('recent_response.json', 'w') as outfile:
-            json.dump(r, outfile)
+            print('requested url: ', airly_api_url.format(
+                city.city_latitude, city.city_longitude))
+            with open('recent_response.json', 'w') as outfile:
+                json.dump(r, outfile)
 
-        # r['current']['values'][1] have random indexes depending on the station...
-        pollution_city = {
-            'city_name': city.city_name,
-            'city_latitude': city.city_latitude,
-            'city_longitude': city.city_longitude,
-            'temperature': r['current']['values'][5]['value'],
-            'humidity': r['current']['values'][4]['value'],
-            'pm2_5': r['current']['values'][1]['value'],
-            'pm10': r['current']['values'][2]['value'],
+            # r['current']['values'][1] have random indexes depending on the station...
+            pollution_city = {
+                'city_name': city.city_name,
+                'city_latitude': city.city_latitude,
+                'city_longitude': city.city_longitude,
+                'temperature': r['current']['values'][5]['value'],
+                'humidity': r['current']['values'][4]['value'],
+                'pm2_5': r['current']['values'][1]['value'],
+                'pm10': r['current']['values'][2]['value'],
 
-            'description': r['current']['indexes'][0]['description'],
-            'color': r['current']['indexes'][0]['color'],
-        }
+                'description': r['current']['indexes'][0]['description'],
+                'color': r['current']['indexes'][0]['color'],
+            }
 
-        print(pollution_city)
-        weather_data.append(pollution_city)
+            print(pollution_city)
+            weather_data.append(pollution_city)
 
-    # context_pollution = {'pollution_data': pollution_data,
-    #                      'station_form': station_form}
+        # context_pollution = {'pollution_data': pollution_data,
+        #                      'station_form': station_form}
 
-    # context = {'weather_data': weather_data, 'form': form,  # data from weather
-    #            'pollution_data': pollution_data, 'station_form': station_form}  # data from pollution
+        # context = {'weather_data': weather_data, 'form': form,  # data from weather
+        #            'pollution_data': pollution_data, 'station_form': station_form}  # data from pollution
 
     context = {'weather_data': weather_data,
                'form': form}  # data from weather
@@ -237,16 +258,17 @@ def custom(request):
 
             if form.is_valid():
                 print("Form is valid - saving in DB")
-                messages.info(request, 'Received good response, adding to Database')
+                messages.info(
+                    request, 'Received good response, adding to Database')
                 form.save(commit=True)  # commiting our data to database
-                
 
             else:
                 print("form is not valid")
                 messages.info(request, 'Form is not valid')
         else:
             print("POST response is not 200 - error:", converted_response)
-            messages.info(request, 'POST response is not 200 - error:', converted_response)
+            messages.info(
+                request, 'POST response is not 200 - error:', converted_response)
             # add some kind of communicate for wrong city
             # return HttpResponse("City not found")
 
@@ -259,10 +281,12 @@ def custom(request):
     for station in stations:
 
         try:
-            r = requests.get(url_for_data.format(station.station_ip, station.station_port)).json()
-        except: #if station is not sending data
+            r = requests.get(url_for_data.format(
+                station.station_ip, station.station_port)).json()
+        except:  # if station is not sending data
             print('Request failed')
-            messages.info(request, 'Problem with accessing custom station data, please check if it is working or specified ip is correct')
+            messages.info(
+                request, 'Problem with accessing custom station data, please check if it is working or specified ip is correct')
 
             pollution_custom_station_data = {
                 'city_name': 'Error',
@@ -280,7 +304,6 @@ def custom(request):
             weather_data_custom.append(pollution_custom_station_data)
 
             break
-        
 
         print('requested url: ', url_for_data.format(
             station.station_ip, station.station_port))

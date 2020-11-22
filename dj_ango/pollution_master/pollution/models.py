@@ -9,10 +9,21 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 from django.utils import timezone
+
+
+# Importing user model
+from django.contrib.auth.models import User
+# from .models import Profile
+
 # Create your models here.
 
 
 class City(models.Model):
+    # every City model will be linked to some user
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="user_cities", null=True)
+    # api_key = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
     city_name = models.CharField(max_length=40)
 
     city_latitude = models.FloatField(

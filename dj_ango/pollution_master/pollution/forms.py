@@ -3,13 +3,15 @@ from django import forms
 from .models import City
 from .models import Custom_station
 
+from django.contrib.auth.models import User
+
 
 class CityForm(ModelForm):
     class Meta:
         model = City
         # each field from database has to be specified here
         fields = ['city_name', 'city_latitude',
-                  'city_longitude', 'city_adding_date']
+                  'city_longitude', 'city_adding_date', 'user']
         widgets = {'city_name': TextInput(
             attrs={'class': 'input', 'placeholder': 'City Name'})}
 
