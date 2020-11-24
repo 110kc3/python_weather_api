@@ -70,7 +70,7 @@ def index(request):
 
                 POST_copy['city_latitude'] = city_latitude
                 POST_copy['city_longitude'] = city_longitude
-
+                
                 print(POST_copy['city_name'])
                 print(POST_copy['city_latitude'])
             except:
@@ -221,6 +221,7 @@ def index(request):
     return render(request, 'pollution/pollution.html', context)
 
 
+@login_required
 def custom(request):
 
     # the request for sensor data is at http://192.168.0.29:8082/data
@@ -240,37 +241,42 @@ def custom(request):
         print('The post request is: ', POST_copy)
         print(request.POST.get('station_ip'), request.POST.get('station_port'))
 
-        check_for_response = requests.get(
-            url_for_response_check.format(request.POST.get('station_ip'), request.POST.get('station_port')))
+        try:
+            check_for_response = requests.get(url_for_response_check.format(request.POST.get('station_ip'), request.POST.get('station_port')))
+        
+            # check_for_city.raise_for_status() #for later - each exception handled?
 
-        # check_for_city.raise_for_status() #for later - each exception handled?
+            converted_response = str(check_for_response.status_code)
+            print('City check response: ', converted_response)
 
-        converted_response = str(check_for_response.status_code)
-        print('City check response: ', converted_response)
+            if converted_response == "200":
 
-        if converted_response == "200":
+                pub_date = datetime.datetime.now()
+                print(pub_date)
+                POST_copy['station_adding_date'] = pub_date
+                POST_copy['user'] = request.user.id
 
-            pub_date = datetime.datetime.now()
-            print(pub_date)
-            POST_copy['station_adding_date'] = pub_date
+                form = CustomStationForm(POST_copy)
 
-            form = CustomStationForm(POST_copy)
+                if form.is_valid():
+                    print("Form is valid - saving in DB")
+                    messages.info(
+                        request, 'Received good response, adding to Database')
+                    form.save(commit=True)  # commiting our data to database
 
-            if form.is_valid():
-                print("Form is valid - saving in DB")
-                messages.info(
-                    request, 'Received good response, adding to Database')
-                form.save(commit=True)  # commiting our data to database
-
+                else:
+                    print("form is not valid")
+                    messages.info(request, 'Form is not valid')
             else:
-                print("form is not valid")
-                messages.info(request, 'Form is not valid')
-        else:
-            print("POST response is not 200 - error:", converted_response)
-            messages.info(
-                request, 'POST response is not 200 - error:', converted_response)
-            # add some kind of communicate for wrong city
-            # return HttpResponse("City not found")
+                print("POST response is not 200 - error:", converted_response)
+                messages.info(
+                    request, 'POST response is not 200 - error:', converted_response)
+                # add some kind of communicate for wrong city
+                # return HttpResponse("City not found")
+        except:
+            print("Problem with connecting to station")
+            messages.info(request, 'Problem with connecting to station')
+            pass
 
     form = CustomStationForm()
 

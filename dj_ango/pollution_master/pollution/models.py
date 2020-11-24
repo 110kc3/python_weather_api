@@ -45,6 +45,10 @@ class City(models.Model):
 
 
 class Custom_station(models.Model):
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="user_stations", null=True)
+
     station_ip = models.GenericIPAddressField()
     station_port = models.IntegerField()
 

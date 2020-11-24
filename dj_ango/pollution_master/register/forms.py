@@ -18,4 +18,8 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['api_key']
+        widgets = {
+          'api_key': forms.Textarea(attrs={'rows':1, 'cols':1}),
+        }
+
 

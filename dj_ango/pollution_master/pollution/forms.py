@@ -20,7 +20,7 @@ class StationForm(ModelForm):
     class Meta:
         model = City
         fields = ['city_name', 'city_latitude',
-                  'city_longitude', 'city_adding_date']
+                  'city_longitude', 'city_adding_date', 'user']
 
         # widgets = {'city_latitude': forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Station latitude ', 'step': "0.01",  'label': 'Station'}), 'city_longitude': forms.NumberInput(
         #     attrs={'class': 'input', 'placeholder': 'Station longitude ', 'step': "0.01"})}

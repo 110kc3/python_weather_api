@@ -6,13 +6,21 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-	<form method="POST" class="form-group">
-	{% csrf_token %}
-	{{ u_form|crispy }}
-	{{ p_form|crispy }}
-	<button type="submit" class="button is-info">Register</button>
-	</form>
+<div class="column is-half is-offset-one-quarter">
+    <div class="content p-1 " >   
+        <p>
+			<form method="POST" class="form-group">
+			{% csrf_token %}
+			{{ u_form|crispy }}
+			{{ p_form|crispy }}
+			<p>Already have an accoount? Log in <a href="/login">here</a></p>
+			<button type="submit" class="button is-info">Register</button>
+			</form>
+		</p>    
+	</div>
+</div>
 {% endblock %}
+
 
 
 
