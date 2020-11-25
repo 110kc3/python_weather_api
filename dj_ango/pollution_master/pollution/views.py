@@ -26,6 +26,9 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+# test station ip: 192.168.0.29
+# test station port: 8082
+
 
 @login_required
 def index(request):
@@ -70,7 +73,7 @@ def index(request):
 
                 POST_copy['city_latitude'] = city_latitude
                 POST_copy['city_longitude'] = city_longitude
-                
+
                 print(POST_copy['city_name'])
                 print(POST_copy['city_latitude'])
             except:
@@ -242,12 +245,13 @@ def custom(request):
         print(request.POST.get('station_ip'), request.POST.get('station_port'))
 
         try:
-            check_for_response = requests.get(url_for_response_check.format(request.POST.get('station_ip'), request.POST.get('station_port')))
-        
+            check_for_response = requests.get(url_for_response_check.format(
+                request.POST.get('station_ip'), request.POST.get('station_port')))
+
             # check_for_city.raise_for_status() #for later - each exception handled?
 
             converted_response = str(check_for_response.status_code)
-            print('City check response: ', converted_response)
+            print('Station check response: ', converted_response)
 
             if converted_response == "200":
 
@@ -286,51 +290,56 @@ def custom(request):
 
     for station in stations:
 
-        try:
-            r = requests.get(url_for_data.format(
-                station.station_ip, station.station_port)).json()
-        except:  # if station is not sending data
-            print('Request failed')
-            messages.info(
-                request, 'Problem with accessing custom station data, please check if it is working or specified ip is correct')
+        print('I am user with id', request.user.id,
+              'requesting data from station with user id of', station.user.id)
+
+        # # restrict view of cities not added by specific user
+        if request.user.id is station.user.id:
+            try:
+                r = requests.get(url_for_data.format(
+                    station.station_ip, station.station_port)).json()
+            except:  # if station is not sending data
+                print('Request failed')
+                messages.info(
+                    request, 'Problem with accessing custom station data, please check if it is working or specified ip is correct')
+
+                pollution_custom_station_data = {
+                    'city_name': 'Error',
+                    'station_ip': station.station_ip,
+                    'station_port': station.station_port,
+                    'temperature': 0,
+                    'humidity': 0,
+                    'pm2_5': 0,
+                    'pm10': 0,
+
+                    'description': 'Error getting data',
+                    'color': '#ffffff',
+                }
+                print(pollution_custom_station_data)
+                weather_data_custom.append(pollution_custom_station_data)
+
+                break
+
+            print('requested url: ', url_for_data.format(
+                station.station_ip, station.station_port))
+            # with open('recent_response_station.json', 'w') as outfile:
+            #     json.dump(r, outfile)
 
             pollution_custom_station_data = {
-                'city_name': 'Error',
+                'city_name': r['current']['indexes'][0]['stationcity'],
                 'station_ip': station.station_ip,
                 'station_port': station.station_port,
-                'temperature': 0,
-                'humidity': 0,
-                'pm2_5': 0,
-                'pm10': 0,
+                'temperature': r['current']['values'][5]['value'],
+                'humidity': r['current']['values'][4]['value'],
+                'pm2_5': r['current']['values'][1]['value'],
+                'pm10': r['current']['values'][2]['value'],
 
-                'description': 'Error getting data',
-                'color': '#ffffff',
+                'description': r['current']['indexes'][0]['description'],
+                'color': r['current']['indexes'][0]['color'],
             }
+
             print(pollution_custom_station_data)
             weather_data_custom.append(pollution_custom_station_data)
-
-            break
-
-        print('requested url: ', url_for_data.format(
-            station.station_ip, station.station_port))
-        # with open('recent_response_station.json', 'w') as outfile:
-        #     json.dump(r, outfile)
-
-        pollution_custom_station_data = {
-            'city_name': r['current']['indexes'][0]['stationcity'],
-            'station_ip': station.station_ip,
-            'station_port': station.station_port,
-            'temperature': r['current']['values'][5]['value'],
-            'humidity': r['current']['values'][4]['value'],
-            'pm2_5': r['current']['values'][1]['value'],
-            'pm10': r['current']['values'][2]['value'],
-
-            'description': r['current']['indexes'][0]['description'],
-            'color': r['current']['indexes'][0]['color'],
-        }
-
-        print(pollution_custom_station_data)
-        weather_data_custom.append(pollution_custom_station_data)
 
     context = {'weather_data_custom': weather_data_custom,
                'form': form}  # data from weather

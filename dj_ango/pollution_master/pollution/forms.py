@@ -29,7 +29,7 @@ class StationForm(ModelForm):
 class CustomStationForm(ModelForm):
     class Meta:
         model = Custom_station
-        fields = ['station_ip', 'station_port', 'station_adding_date']
+        fields = ['station_ip', 'station_port', 'station_adding_date', 'user']
 
 # class City(models.Model):
 #     city_name = models.CharField(max_length=40)
