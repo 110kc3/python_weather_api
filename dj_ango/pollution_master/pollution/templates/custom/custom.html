@@ -1,65 +1,10 @@
+{% extends "pollution/base.html" %}
+
+{% block title %}Pollution stations{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
 {% load widget_tweaks %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
-
-
-    <!-- <style>
-        .content {
-          font-size: 120%;
-          background-color: red;
-        }
-    </style> -->
-
-</head>
-
-<body>
-    <section class="hero is-dark"> 
-        <!-- is-info also cool -->
-        <div class="hero-body">
-            <div class="container">
-                <h1 class="title">
-                    What's the air quality like?
-                </h1>
-            </div>
-        </div>
-    </section>
-
-
-
-    <section class = "hero is-info">
-        <div class = "container">
-           <h2 class = "subtitle">
-             {% if messages %}
-             <ul class="messages">
-                 {% for message in messages %}
-                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                 {% endfor %}
-             </ul>
-             {% endif %}
-
-             <!-- JS script to make messages disapear after some time -->
-             <script
-                 src="https://code.jquery.com/jquery-3.4.1.min.js"
-                 integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-                 crossorigin="anonymous"></script>
-
-                 <script text="javascript">
-                     setTimeout(fade_out, 3000);
-                     function fade_out() {
-                         $(".messages").fadeOut().empty();
-                     }
-                     // $(".post-form")[0].reset(); // this is to reset the form 
-             </script> 
-           </h2>
-     </div>
-  </section>
 
 
 
@@ -67,11 +12,9 @@
     <section class="section">
         <div class="container">
             <div class="columns">
-                <div class="column  is-4">
-
-                </div>
+                
                  <!-- POST for pollution -->
-                 <div class="column is-one-third ">
+                 <div class="column is-half">
                     <form method="POST">
                         {% csrf_token %}
                         <div class="field has-addons">
@@ -92,10 +35,20 @@
                     </form>
                 </div>
                  <!-- <a class="btn btn-primary" href="/admin">Text redirect</a> -->
-                <div class="column is-one-third ">
+                <div class="column is-1 is-offset-1">
                     <button class="button is-primary"><a href="/pollution"> <dfn data-info="Get data from public stations">Basic</dfn></a></button>
 
                     
+                </div>
+
+                <div class="column ">
+            
+                    <a href="/logout">
+                        <button type="submit" class="button is-info" >Logout</button>	
+                     </a>
+                     <p>Logged in as {{request.user.username}}</p>
+                     </div>
+                    <!-- <input type="checkbox" id="scales" name="scales" checked> -->
                 </div>
 
                 </div>
@@ -147,8 +100,4 @@
             </div>
         </div>
     </section>
-    <footer class="footer">
-    </footer>
-</body>
-
-</html>
+{% endblock %}
