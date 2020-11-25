@@ -8,13 +8,14 @@
 	
 	<head>
 		<meta charset="UTF-8">
+		<!-- responsive viewport meta tag -->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		
 		<title>{% block title %}Document{% endblock %}</title>
-	
-		<!-- <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro-all.min.css"> -->
+
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
+		
 	
 		<!-- Modal - infobox onclick -->
 		<script src = "https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
@@ -64,14 +65,18 @@
 			dfn:hover::before {opacity: 1;}
 			dfn:hover::after {top: 30px;}
 			dfn:hover::before {top: 20px;}
-	
+			/* .modal-backdrop{
+			bottom: 0
+			} */
+
 		</style>
-	
+		
 
 	
 </head>
  
 <body>
+
 
 	
 	<section class="hero is-dark"> 
@@ -81,25 +86,42 @@
 				<h1 class="title">
 					What's the air quality like? </h1>
 					
-					<div class = "container">
-					
+				
+			
+				
+			</div>
+		</div>
+
+		<!-- Hero footer: will stick at the bottom -->
+		<div class="hero-foot is-dark fixed">
+			<nav class="tabs">
+			<div class="container">
+				<ul>
+			
+				<li class="is-active"><a>Login</a></li>
+				<li class="is-active"><a>Register</a></li>
+				<li class="is-active"><a>Basic</a></li>
+				<li class="is-active"><a>Custom</a></li>
+				<li class="is-active">
+				
+				
+				
 						
-							<a class = "button is-right is-primary modal-button" data-target="#modal">What is this</a>
-						
-						<div id="modal" class = "modal">
-							<div class = "modal-background"></div>
-							<div class = "modal-content">
-								<div class = "box">
-									<article class = "media">
-									<div class = "media-left">
-										<figure class = "image is-64x64">
-											<img src = "https://www.tutorialspoint.com/bootstrap/images/64.jpg" alt="Image">
-										</figure>
-									</div>
-									<div class = "media-content">
-										<div class = "content">
-											<h1>What this does</h1>
-											<p>This is application takes different stations data and displays it. You can specify and add stations.</p>
+
+						<div class="modal" id="myModal">
+							<div class="modal-background">
+							</div>
+							<div class="modal-card" id="myModal">
+								<header class="modal-card-head" id="myModal">
+									<p class="modal-card-title">What this application does</p>
+									<button class="delete" aria-label="close" data-bulma-modal="close"></button>
+								</header>
+								<section class="modal-card-body">
+							
+									
+										<div class = "content has-text-black">
+											<p>This is application takes specified stations data and displays it. You can specify and add stations.</p>
+											
 											<h2>Adding public station </h2>
 											<p>How to add station</p>
 											
@@ -109,54 +131,24 @@
 											<p>Go to Custom button</p>
 											<h5>Links</h5>
 											<p>GIT.</p>
-											</ul>
-											</div>
-											<!-- Add icons for Git or other stuff? -->
-										<!-- <nav class = "level">
-											<div class = "level-left">
-												<a class = "level-item">
-												<span class = "icon is-small"><i class = "fa fa-reply"></i></span>
-												</a>
-												<a class = "level-item">
-												<span class = "icon is-small"><i class = "fa fa-retweet"></i></span>
-												</a>
-											</div>
-										</nav> -->
-									</div>
-									</article>
-								</div>
-							</div>
-							<button class = "modal-close is-large" aria-label="close"></button>
-						</div>
-			
-			
-						<script>
-							$(".modal-button").click(function() {
-							var target = $(this).data("target");
-							$("html").addClass("is-clipped");
-							$(target).addClass("is-active");
-							});
-							
-							$(".modal-close").click(function() {
-							$("html").removeClass("is-clipped");
-							$(this).parent().removeClass("is-active");
-							});
-							</script>
-				
-			</div>
-		</div>
 
-		<!-- Hero footer: will stick at the bottom -->
-		<div class="hero-foot is-dark">
-			<nav class="tabs">
-			<div class="container">
-				<ul>
-				<li class="is-active"><a>Overview</a></li>
-				<li><a>Modifiers</a></li>
-				<li><a>Grid</a></li>
-				<li><a>Elements</a></li>
-				<li><a>Components</a></li>
-				<li><a>Layout</a></li>
+										</div>
+									
+								</section>
+
+								
+
+								<footer class="modal-card-foot">
+								<!-- <button class="button is-success">Save changes</button> -->
+								<button class="button is-success" data-bulma-modal="close">Ok</button>
+								</footer>
+							</div>
+						</div>
+
+						<button id="modal_button" class = "button is-primary p-2">What this application does</button>
+										
+				
+				</li>
 				</ul>
 			</div>
 			</nav>
@@ -197,15 +189,86 @@
 
 
 	<div class="columns is-half is-centered">
-	<div class="column ">
-		<p class="bd-notification is-primary">
-		{% block content %}
-		{% endblock %}
-		</p>
+		<div class="column ">
+			<p class="bd-notification is-primary">
+			{% block content %}
+			{% endblock %}
+			</p>
+		</div>
+
+
+
+		<!-- Script for closing popup window with info -->
+		<script>
+		class BulmaModal {
+			constructor(selector) {
+				this.elem = document.querySelector(selector)
+				this.close_data()
+			}
+			
+			show() {
+				this.elem.classList.toggle('is-active')
+				this.on_show()
+			}
+			
+			close() {
+				this.elem.classList.toggle('is-active')
+				this.on_close()
+			}
+			
+			close_data() {
+				var modalClose = this.elem.querySelectorAll("[data-bulma-modal='close'], .modal-background")
+				var that = this
+				modalClose.forEach(function(e) {
+					e.addEventListener("click", function() {
+						
+						that.elem.classList.toggle('is-active')
+
+						var event = new Event('modal:close')
+
+						that.elem.dispatchEvent(event);
+					})
+				})
+			}
+			
+			on_show() {
+				var event = new Event('modal:show')
+			
+				this.elem.dispatchEvent(event);
+			}
+			
+			on_close() {
+				var event = new Event('modal:close')
+			
+				this.elem.dispatchEvent(event);
+			}
+			
+			addEventListener(event, callback) {
+				this.elem.addEventListener(event, callback)
+			}
+		}
+
+		var btn = document.querySelector("#modal_button")
+		var mdl = new BulmaModal("#myModal")
+
+		btn.addEventListener("click", function () {
+			mdl.show()
+		})
+
+		mdl.addEventListener('modal:show', function() {
+			console.log("opened")
+		})
+
+		mdl.addEventListener("modal:close", function() {
+			console.log("closed")
+		})
+
+
+			
+		</script>
+
 	</div>
-
-
-
+	</body>
 </body>
 
 </html>
