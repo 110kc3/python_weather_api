@@ -98,10 +98,11 @@
 			<div class="container">
 				<ul>
 			
-				<li class="is-active"><a>Login</a></li>
-				<li class="is-active"><a>Register</a></li>
-				<li class="is-active"><a>Basic</a></li>
-				<li class="is-active"><a>Custom</a></li>
+				<li class="is-active"><a href="/login" >Login</a></li>
+		
+				<li class="is-active"><a href="/register" >Register</a></li>
+				<li class="is-active"><a href="/pollution" >Basic</a></li>
+				<li class="is-active"><a href="/pollution/custom" >Custom</a></li>
 				<li class="is-active">
 				
 				
@@ -120,15 +121,20 @@
 							
 									
 										<div class = "content has-text-black">
-											<p>This is application takes specified stations data and displays it. You can specify and add stations.</p>
+											<p>This is application takes specified stations data with help of airly API and displays it. 
+												You can specify and add airly stations or your own (configured before)</p>
 											
 											<h2>Adding public station </h2>
-											<p>How to add station</p>
+											<p>You can add public station from airly service by specifying its coordinates 
+												or you can put City name that you want your station from and application will find you the closest station.
+											</p>
 											
 											<h3>Custom station configuration</h3>
-											<p>How to configure your station to work with this application</p>
+											<p>The instruction on how to configure your custom station running on Raspberry Pi can be found here: Git link</p>
+
 											<h3>Adding custom station</h3>
-											<p>Go to Custom button</p>
+											<p>If you want to connect your custom station to this application you will need its ip address and port that station listens to.</p>
+											
 											<h5>Links</h5>
 											<p>GIT.</p>
 
