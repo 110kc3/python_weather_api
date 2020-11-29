@@ -1,3 +1,5 @@
+
+
 {% load widget_tweaks %}
 
 <!doctype html>
@@ -266,6 +268,21 @@
 		})
 
 		mdl.addEventListener("modal:close", function() {
+			console.log("closed")
+		})
+
+		var btn_register = document.querySelector("#modal_button_register")
+		var mdl_register = new BulmaModal("#myModal_register")
+
+		btn_register.addEventListener("click", function () {
+			mdl_register.show()
+		})
+
+		mdl_register.addEventListener('modal:show', function() {
+			console.log("opened")
+		})
+
+		mdl_register.addEventListener("modal:close", function() {
 			console.log("closed")
 		})
 

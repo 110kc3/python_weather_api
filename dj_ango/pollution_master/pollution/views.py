@@ -58,7 +58,7 @@ def index(request):
     print('User api_key is: ', api_key)
 
     # need api key validation uppon registering
-    # pollution_API_key=api_key
+    pollution_API_key = api_key
 
     # print("The request is: ")
     # print(request)
@@ -192,7 +192,7 @@ def index(request):
         else:
             print("POST response is not 200 - error:", converted_response)
             messages.info(
-                request, 'POST response is not 200 - error:', converted_response)
+                request, 'POST response is not 200 - error')
             # add some kind of communicate for wrong city
             # return HttpResponse("City not found")
 
