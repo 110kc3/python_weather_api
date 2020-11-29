@@ -19,6 +19,10 @@ from django.contrib.auth.models import User
 
 
 class City(models.Model):
+
+    # required id model field
+    id = models.AutoField(primary_key=True)
+
     # every City model will be linked to some user
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="user_cities", null=True)
@@ -45,6 +49,8 @@ class City(models.Model):
 
 
 class Custom_station(models.Model):
+    # required id model field
+    id = models.AutoField(primary_key=True)
 
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="user_stations", null=True)

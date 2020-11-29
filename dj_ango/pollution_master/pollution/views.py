@@ -2,6 +2,7 @@ import requests
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render
+from django.shortcuts import redirect
 
 from django.http import Http404
 import datetime
@@ -31,7 +32,7 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required
-def index(request, id):
+def index(request):
 
     pollution_API_key = 'aV4cM5PIhRFvnfP4tiN1Cx2TAa8s1sf0'
 
@@ -198,7 +199,7 @@ def index(request, id):
 
             # r['current']['values'][1] have random indexes depending on the station...
             pollution_city = {
-                # 'id': city.id,
+                'id': city.id,
                 'city_name': city.city_name,
                 'city_latitude': city.city_latitude,
                 'city_longitude': city.city_longitude,
@@ -225,11 +226,21 @@ def index(request, id):
     return render(request, 'pollution/pollution.html', context)
 
 
-def delete(request, id):
-    print('Request: ', request, ' with id: ', id)
+@login_required
+def deleteCity(request, id):
+    # print('Request: ', request, ' with id: ', id)
     city = City.objects.get(id=id)
     city.delete()
-    return redirect("/view")
+    return redirect('/pollution')
+
+
+@login_required
+def deleteStation(request, id):
+    # print('Request: ', request, ' with id: ', id)
+
+    station = Custom_station.objects.get(id=id)
+    station.delete()
+    return redirect('/pollution/custom')
 
 
 @login_required
@@ -312,6 +323,7 @@ def custom(request):
                     request, 'Problem with accessing custom station data, please check if it is working or specified ip is correct')
 
                 pollution_custom_station_data = {
+                    'id': station.id,
                     'city_name': 'Error',
                     'station_ip': station.station_ip,
                     'station_port': station.station_port,
@@ -334,6 +346,7 @@ def custom(request):
             #     json.dump(r, outfile)
 
             pollution_custom_station_data = {
+                'id': station.id,
                 'city_name': r['current']['indexes'][0]['stationcity'],
                 'station_ip': station.station_ip,
                 'station_port': station.station_port,

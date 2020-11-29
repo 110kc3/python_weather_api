@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     # ex: /pollution/custom
     path('custom/', views.custom, name='custom'),
-    path('delete/<int:id>', views.delete, name='delete'),
-
+    path('deleteCity/<int:id>', views.deleteCity, name='deleteCity'),
+    path('custom/deleteStation/<int:id>',
+         views.deleteStation, name='deleteStation'),
 ]

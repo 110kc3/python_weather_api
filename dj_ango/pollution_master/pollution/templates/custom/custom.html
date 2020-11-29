@@ -75,6 +75,11 @@
                                 <div class="content  p-3" style="border-radius: 10px; background-color: {{ pollution_custom_station.color }};"> 
                                     <p>
                                         <span class="title">{{ pollution_custom_station.city_name }}</span>
+                                        <!-- <span class="title">Station ID: {{ pollution_custom_station.id }}</span> -->
+                                        <span class="icon is-right is-medium has-text-dark " style="float: right">
+                                            <a href="/pollution/custom/deleteStation/{{ pollution_custom_station.id }}"><i class="fas fa-trash-alt" aria-hidden="true"></i></a>
+                                        </span>
+                                         
                                         <br>
                             
                                         Station ip: {{ pollution_custom_station.station_ip }}:{{ pollution_custom_station.station_port }}

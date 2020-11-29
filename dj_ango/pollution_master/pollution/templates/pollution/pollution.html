@@ -93,17 +93,17 @@
                                 <p>
                                     
                                     <span class="title">{{ pollution_city.city_name }}</span>
+                                        
+                                    <span class="icon is-right is-medium has-text-dark " style="float: right">
+                                      <a href="/pollution/deleteCity/{{ pollution_city.id }}"><i class="fas fa-trash-alt" aria-hidden="true"></i></a>
+                                    </span>
+                                   
                                     <br>
+                                  
                                     Station Lat: {{ pollution_city.city_latitude }} Lng: {{ pollution_city.city_longitude }}
                                     
                                     <br>
-                                    <br>
-                                    <span class="subtitle">ID: {{ pollution_city.id }}</span>
-                                    <br>
-
-                                    <a href="/pollution/delete/{{ pollution_city.id }}" class="btn">Delete station</a>
-                                    <br>
-
+                                    <!-- <span class="subtitle">ID: {{ pollution_city.id }}</span> -->
 
                                     <span class="subtitle">Temperature: {{ pollution_city.temperature }} °C</span>
                                     <br>
