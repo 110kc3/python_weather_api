@@ -8,6 +8,7 @@ from django.http import Http404
 import datetime
 
 from .models import City
+
 from .forms import CityForm
 
 from .models import Custom_station
@@ -25,6 +26,8 @@ from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 
+from register.models import Profile
+
 # Create your views here.
 
 # test station ip: 192.168.0.29
@@ -40,9 +43,26 @@ def index(request):
 
     airly_api_url = 'https://airapi.airly.eu/v2/measurements/nearest?lat={}&lng={}&maxDistanceKM=50&apikey=' + pollution_API_key
 
-    print("The request is: ")
-    print(request)
-    print("\n")
+    print(request.user.id)
+    # city = City.objects.get(id=id)
+
+    api_users = Profile.objects.all()
+    api_key = ''
+
+    for api_user in api_users:
+        print('user with id: ', request.user.id,
+              ' requesting key form user ', api_user.user_id)
+        if request.user.id is api_user.user_id:
+            api_key = api_user.api_key
+
+    print('User api_key is: ', api_key)
+
+    # need api key validation uppon registering
+    # pollution_API_key=api_key
+
+    # print("The request is: ")
+    # print(request)
+    # print("\n")
 
     if request.method == 'POST':
 
@@ -150,6 +170,7 @@ def index(request):
 
                 print(request.user.id)
                 print(POST_copy['user'])
+
                 form = CityForm(POST_copy)
 
                 # print('City latitude after form assigning: ',
