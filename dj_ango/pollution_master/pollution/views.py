@@ -31,7 +31,7 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required
-def index(request):
+def index(request, id):
 
     pollution_API_key = 'aV4cM5PIhRFvnfP4tiN1Cx2TAa8s1sf0'
 
@@ -184,7 +184,7 @@ def index(request):
 
     for city in cities:
         print('I am user with id', request.user.id,
-              'requesting data from city with user id of', city.user.id)
+              'requesting data from city with id:', city.id, ' with user id of', city.user.id)
 
         # restrict view of cities not added by specific user
         if request.user.id is city.user.id:
@@ -198,6 +198,7 @@ def index(request):
 
             # r['current']['values'][1] have random indexes depending on the station...
             pollution_city = {
+                # 'id': city.id,
                 'city_name': city.city_name,
                 'city_latitude': city.city_latitude,
                 'city_longitude': city.city_longitude,
@@ -222,6 +223,13 @@ def index(request):
     context = {'weather_data': weather_data,
                'form': form}  # data from weather
     return render(request, 'pollution/pollution.html', context)
+
+
+def delete(request, id):
+    print('Request: ', request, ' with id: ', id)
+    city = City.objects.get(id=id)
+    city.delete()
+    return redirect("/view")
 
 
 @login_required

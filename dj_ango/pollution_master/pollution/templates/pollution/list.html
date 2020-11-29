@@ -13,43 +13,6 @@
         <div class="columns">
            
 
-
-            <div class="column is-one-quarter ">
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="field has-addons">
-                        <div class="control is-expanded">
-                            {{ form.city_name }}
-                        </div>
-                        <div class="control">
-                            <button type="submit" class="button is-info" name ="add_city_button">
-                                Add City
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <!-- POST for pollution -->
-            <div class="column is-two-fifths ">
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="field has-addons">
-                        <div class="control is-expanded">
-                            <!-- {{ form.city_latitude }} -->
-                            {% render_field form.city_latitude class="input" placeholder="Station latitude" %}
-                        </div>
-                        <div class="control is-expanded">
-                            <!-- {{ form.city_longitude }} -->
-                            {% render_field form.city_longitude class="input" placeholder="Station longitude" %}
-                        </div>
-                        <div class="control">
-                            <button type="submit" class="button is-info" name ="add_station_button">
-                                Add Station
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
             <!-- <a class="btn btn-primary" href="/admin">Text redirect</a> -->
             <div class="column  ">
                 <button class="button is-success"><a href="/pollution/custom"> <dfn data-info="Get data from your custom stations">Custom</dfn></a></button>
@@ -100,10 +63,6 @@
                                     <br>
                                     <span class="subtitle">ID: {{ pollution_city.id }}</span>
                                     <br>
-
-                                    <a href="/pollution/delete/{{ pollution_city.id }}" class="btn">Delete station</a>
-                                    <br>
-
 
                                     <span class="subtitle">Temperature: {{ pollution_city.temperature }} °C</span>
                                     <br>
