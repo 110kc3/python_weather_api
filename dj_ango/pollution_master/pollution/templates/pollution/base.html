@@ -105,7 +105,7 @@
 				<li class="is-active"><a href="/register" >Register</a></li>
 				<li class="is-active"><a href="/pollution" >Basic</a></li>
 				<li class="is-active"><a href="/pollution/custom" >Custom</a></li>
-				<li class="is-active">
+				<li class="is-active" style=".hero.is-dark .tabs a{color: #111};">
 				
 				
 				
@@ -116,35 +116,86 @@
 							</div>
 							<div class="modal-card" id="myModal">
 								<header class="modal-card-head" id="myModal">
-									<p class="modal-card-title">What this application does</p>
+									<p class="modal-card-title">What this application does and how to use it</p>
 									<button class="delete" aria-label="close" data-bulma-modal="close"></button>
 								</header>
 								<section class="modal-card-body">
 							
 									
 										<div class = "content has-text-black">
-											<p>This is application takes specified stations data with help of airly API and displays it. 
+								
+											<p>This is application takes specified stations data with help of airly service and displays it. <br>
 												You can specify and add airly stations or your own (configured before)</p>
-											
-											<h2>Adding public station </h2>
-											<p>You can add public station from airly service by specifying its coordinates 
-												or you can put City name that you want your station from and application will find you the closest station.
+
+											<p>As the station uses external service before starting you will need to <br>
+												- Register on airly.com service to obtain API key to use public stations <br>
+												- Register on this site in order to have your accont save your stations data
 											</p>
 											
+											<h3>Adding public station - <a href="https://airly.org/map/en#50.289934,18.659788,i9865"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> station example</a> </h3>
+
+											<p>You can add public station by specifying its coordinates from airly service </p>	
+											<p>The coordinates to add station appear in the link - example from above <br>latitude: 50.289934 longitude: 18.659788 </p>
+
+											<p class="image ">
+												{% load static %}
+												<img src="{% static '/pollution/add_station_cords.PNG' %}" alt="My image">
+											</p>
+
+											<p>You can also specify the City that you want a station from and application <br> will choose a station for you</p>
+
+											<p class="image ">
+												{% load static %}
+												<img src="{% static '/pollution/add_station_city.PNG' %}" alt="My image" style="width: 60%">
+											</p>
+
+
+											<p>*For now not all stations are supported: <br> the ones without a name or data will get rejected by application</p>
+										
 											<h3>Custom station configuration</h3>
-											<p>The instruction on how to configure your custom station running on Raspberry Pi can be found here: Git link</p>
+											<p>The custom station can be build using Raspberry Pi and Nova Fitness SDS011 sensor</p>
+											<p>Instruction on how to configure your custom station can be found 
+												<a href="https://github.com/110kc3/pi_data_taker"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> here</a> </p>
+
+											
 
 											<h3>Adding custom station</h3>
-											<p>If you want to connect your custom station to this application you will need its ip address and port that station listens to.</p>
+											<p>Before connecting your custom station to the application you will need <br>
+												Station IP address <br> 
+												Port on what application on your station listens to</p>
+											<p>This data data can be put into form as shown bellow:</p>
+
+											<p class="image ">
+												{% load static %}
+												<img src="{% static '/pollution/add_station_custom.PNG' %}" alt="My image" style="width: 100%">
+											</p>
+
 											
-											<h5>Links</h5>
-											<p>GIT.</p>
+											<h4>Links</h4>
+											<p> <a href="https://airly.org/map/en#50.289934,18.659788,i9865"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> Airly.com service</a> </p>
+											<p> <a href="https://github.com/110kc3/pi_data_taker"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> Custom station code and configuration </a> </p>
+											<p> <a href="https://github.com/110kc3/pi_data_taker"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> This application code</a> </p>
+											
 
 										</div>
 									
 								</section>
 
 								
+								<!-- 
+									<h3>1. Register on airly service <a href="https://developer.airly.org/register">here</a></p> </h3>
+									<p>
+									In field USAGE DESCRIPTION you can write:
+									<br>
+									"Creating application that uses data from stations on airly.com service. "
+									<p class="image ">
+										{% load static %}
+										<img src="{% static '/pollution/airly_registration_form.png' %}" alt="My image">
+									</p>
+
+								or you can put City name that you want your station from and application will find you the closest station.
+						
+							-->
 
 								<footer class="modal-card-foot">
 								<!-- <button class="button is-success">Save changes</button> -->
