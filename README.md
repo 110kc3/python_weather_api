@@ -29,11 +29,11 @@ Nominatim and geopy - for geolocating user specified cities
 pip install geopy 
 pip install Nominatim
 
-
+pip install PyMySQL==0.10.1
 pip install requests
 
 pip install django-widget-tweaks
-
+pip install django-crispy-forms
 
 4. Run django server locally (The development server)
 

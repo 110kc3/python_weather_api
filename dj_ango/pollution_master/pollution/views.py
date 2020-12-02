@@ -141,8 +141,8 @@ def index(request):
             # Checking if there is data available at selected city
 
             check_for_city = check_for_city.json()
-            with open('response_check.json', 'w') as outfile:
-                json.dump(check_for_city, outfile)
+            # with open('response_check.json', 'w') as outfile:
+            #     json.dump(check_for_city, outfile)
 
             try:
                 # there are some sensors like: Zabrze that have only 4 indexes and none of them are temp/humid/pm
@@ -215,8 +215,8 @@ def index(request):
 
             print('requested url: ', airly_api_url.format(
                 city.city_latitude, city.city_longitude))
-            with open('recent_response.json', 'w') as outfile:
-                json.dump(r, outfile)
+            # with open('recent_response.json', 'w') as outfile:
+            #     json.dump(r, outfile)
 
             # r['current']['values'][1] have random indexes depending on the station...
             pollution_city = {
