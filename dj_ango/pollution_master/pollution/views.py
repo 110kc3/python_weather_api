@@ -210,11 +210,61 @@ def index(request):
 
         # restrict view of cities not added by specific user
         if request.user.id is city.user.id:
-            r = requests.get(airly_api_url.format(
-                city.city_latitude, city.city_longitude)).json()
+             
+              
+            
 
-            print('requested url: ', airly_api_url.format(
-                city.city_latitude, city.city_longitude))
+            try:
+                r = requests.get(airly_api_url.format(city.city_latitude, city.city_longitude)).json()
+                city_response_check = str(r.status_code)
+                print('City check response: ', city_response_check)
+            except:  # if station is not sending data
+                print('Request failed')
+                messages.info(
+                    request, 'Problem with accessing station data - something wrong with station or API key')
+                
+                pollution_city = {
+                    'id': city.id,
+                    'city_name': city.city_name,
+                    'city_latitude': city.city_latitude,
+                    'city_longitude': city.city_longitude,
+                    'temperature': 0,
+                    'humidity': 0,
+                    'pm2_5': 0,
+                    'pm10': 0,
+
+                    'description': 'Station error',
+                    'color': '#FFFFFF',
+                }
+                print(pollution_city)
+                weather_data.append(pollution_city)
+
+                break
+
+            
+            
+
+            if converted_response is not "200":
+                print('requested url: ', airly_api_url.format(city.city_latitude, city.city_longitude))
+                print('Request failed')
+                messages.info(
+                    request, 'Problem with accessing station data - something wrong with station or API key')
+                pollution_city = {
+                    'id': city.id,
+                    'city_name': city.city_name,
+                    'city_latitude': city.city_latitude,
+                    'city_longitude': city.city_longitude,
+                    'temperature': 0,
+                    'humidity': 0,
+                    'pm2_5': 0,
+                    'pm10': 0,
+
+                    'description': 'Station error',
+                    'color': '#FFFFFF',
+                }
+                print(pollution_city)
+                weather_data.append(pollution_city)
+                break
             # with open('recent_response.json', 'w') as outfile:
             #     json.dump(r, outfile)
 
