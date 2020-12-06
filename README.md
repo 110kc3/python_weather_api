@@ -39,5 +39,12 @@ pip install django-crispy-forms
 
 cd /python_weather_api/dj_ango/pollution_master/
 
-python manage.py runserver 
+virtualenv env
+env\scripts\activate
+pip install -r requirements.txt
+
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+
 
