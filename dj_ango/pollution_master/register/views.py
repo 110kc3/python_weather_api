@@ -9,6 +9,7 @@ from django.contrib import messages
 def register(request):
 
     # "aV4cM5PIhRFvnfP4tiN1Cx2TAa8s1sf0"
+    #uickU1nHiAR1KFq8pYndm3SPLhNSZUAj
     if request.method == "POST":
 
         u_form = UserForm(request.POST)

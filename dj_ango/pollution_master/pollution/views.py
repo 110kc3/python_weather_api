@@ -211,16 +211,13 @@ def index(request):
 
         # restrict view of cities not added by specific user
         if request.user.id is city.user.id:
-             
-              
-            
 
             try:
                 r = requests.get(airly_api_url.format(city.city_latitude, city.city_longitude)).json()
                 city_response_check = str(r.status_code)
                 print('City check response: ', city_response_check)
             except:  # if station is not sending data
-                print('Request failed')
+                print('Request failed with station is not sending data')
                 messages.info(
                     request, 'Problem with accessing station data - something wrong with station or API key')
                 
@@ -247,7 +244,7 @@ def index(request):
 
             if converted_response is not "200":
                 print('requested url: ', airly_api_url.format(city.city_latitude, city.city_longitude))
-                print('Request failed')
+                print('Request failed with error code: ',converted_response )
                 messages.info(
                     request, 'Problem with accessing station data - something wrong with station or API key')
                 pollution_city = {
