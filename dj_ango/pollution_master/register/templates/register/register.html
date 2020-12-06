@@ -75,9 +75,15 @@
 			<form method="POST" class="form-group">
 			{% csrf_token %}
 			{{ u_form|crispy }}
+			The password must have minimum 8 characters.
+			<br>
+			<br>
 			<button id="modal_button_register" class = "button is-primary">How to get your API key</button>
+			<br>
+			<br>
 			{{ p_form|crispy }}
 			
+			<br>
 			<p>Already have an accoount? Log in <a href="/login">here</a></p>
 			<button type="submit" class="button is-info">Register</button>
 			</form>
