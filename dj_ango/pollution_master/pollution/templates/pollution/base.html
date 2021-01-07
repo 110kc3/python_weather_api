@@ -1,191 +1,257 @@
-
-
 {% load widget_tweaks %}
 
 <!doctype html>
 <html>
 
-	<!DOCTYPE html>
-	<html lang="en">
-	
-	<head>
-		<meta charset="UTF-8">
-		<!-- responsive viewport meta tag -->
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		
-		<title>{% block title %}Document{% endblock %}</title>
+<!DOCTYPE html>
+<html lang="en">
 
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
-		
-	
-		<!-- Modal - infobox onclick -->
-		<script src = "https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
-		<script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	
-		<!-- template tag that generates the absolute URL of static files. -->
-		<!-- {% load static %} 
+<head>
+	<meta charset="UTF-8">
+	<!-- responsive viewport meta tag -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+	<title>{% block title %}Document{% endblock %}</title>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
+
+
+	<!-- Modal - infobox onclick -->
+	<script src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+	<!-- template tag that generates the absolute URL of static files. -->
+	<!-- {% load static %} 
 	
 		<link rel="stylesheet" type="text/css" href="{% static 'pollution/style.css' %}">  -->
-	
-		<style>
-		   #hint_id_username, #hint_id_password1, #error_1_id_username, #error_1_id_password1, #error_1_id_password2, #hint_id_password2{
-				display: none;
-			}
-		  dfn {
+
+	<style>
+		#hint_id_username,
+		#hint_id_password1,
+		#error_1_id_username,
+		#error_1_id_password1,
+		#error_1_id_password2,
+		#hint_id_password2 {
+			display: none;
+		}
+
+		dfn {
 			padding: 0 0.4em;
 			cursor: help;
 			font-style: normal;
 			position: relative;
-			}
-			dfn::after {
+		}
+
+		dfn::after {
 			content: attr(data-info);
 			display: inline;
 			position: absolute;
-			top: 22px; left: 0;
+			top: 22px;
+			left: 0;
 			opacity: 0;
 			width: 230px;
 			font-size: 13px;
 			font-weight: 700;
 			line-height: 1.5em;
 			padding: 0.5em 0.8em;
-			background: rgba(0,0,0,0.8);
+			background: rgba(0, 0, 0, 0.8);
 			color: #fff;
-			pointer-events: none; /* This prevents the box from apearing when hovered. */
+			pointer-events: none;
+			/* This prevents the box from apearing when hovered. */
 			transition: opacity 250ms, top 250ms;
-			}
-			dfn::before {
+		}
+
+		dfn::before {
 			content: '';
 			display: block;
 			position: absolute;
-			top: 12px; left: 20px;
+			top: 12px;
+			left: 20px;
 			opacity: 0;
-			width: 0; height: 0;
+			width: 0;
+			height: 0;
 			border: solid transparent 5px;
-			border-bottom-color: rgba(0,0,0,0.8);
+			border-bottom-color: rgba(0, 0, 0, 0.8);
 			transition: opacity 250ms, top 250ms;
-			}
-			dfn:hover {z-index: 2;} /* Keeps the info boxes on top of other elements */
-			dfn:hover::after,
-			dfn:hover::before {opacity: 1;}
-			dfn:hover::after {top: 30px;}
-			dfn:hover::before {top: 20px;}
-			/* .modal-backdrop{
+		}
+
+		dfn:hover {
+			z-index: 2;
+		}
+
+		/* Keeps the info boxes on top of other elements */
+		dfn:hover::after,
+		dfn:hover::before {
+			opacity: 1;
+		}
+
+		dfn:hover::after {
+			top: 30px;
+		}
+
+		dfn:hover::before {
+			top: 20px;
+		}
+
+		/* .modal-backdrop{
 			bottom: 0
 			} */
+		body {
+			display: flex;
+			min-height: 100vh;
+			flex-direction: column;
+		}
 
-		</style>
-		
+		#wrapper {
+			flex: 1;
+		}
 
-	
+		.footer {
+			background-color: white;
+			padding: 3rem;
+
+		}
+	</style>
+
+
+
 </head>
- 
+
 <body>
 
 
-	
-	<section class="hero is-dark"> 
+
+	<section class="hero is-dark">
 		<!-- is-info also cool -->
 		<div class="hero-body">
 			<div class="container">
 				<h1 class="title">
 					What's the air quality like? </h1>
-					
-				
-			
-				
+
+
+
+
 			</div>
 		</div>
 
 		<!-- Hero footer: will stick at the bottom -->
 		<div class="hero-foot is-dark fixed">
 			<nav class="tabs">
-			<div class="container">
-				<ul>
-			
-				<li class="is-active"><a href="/login" >Login</a></li>
-		
-				<li class="is-active"><a href="/register" >Register</a></li>
-				<li class="is-active"><a href="/pollution" >Basic</a></li>
-				<li class="is-active"><a href="/pollution/custom" >Custom</a></li>
-				<li class="is-active" style=".hero.is-dark .tabs a{color: #111};">
-				
-				
-				
-						
+				<div class="container">
+					<ul>
 
-						<div class="modal" id="myModal">
-							<div class="modal-background">
-							</div>
-							<div class="modal-card" id="myModal">
-								<header class="modal-card-head" id="myModal">
-									<p class="modal-card-title">What this application does and how to use it</p>
-									<button class="delete" aria-label="close" data-bulma-modal="close"></button>
-								</header>
-								<section class="modal-card-body">
-							
-									
-										<div class = "content has-text-black">
-								
-											<p>This is application takes specified stations data with help of airly service and displays it. <br>
-												You can specify and add airly stations or your own (configured before)</p>
+						<li class="is-active"><a href="/login">Login</a></li>
 
-											<p>As the station uses external service before starting you will need to <br>
-												- Register on airly.com service to obtain API key to use public stations <br>
-												- Register on this site in order to have your accont save your stations data
+						<li class="is-active"><a href="/register">Register</a></li>
+						<li class="is-active"><a href="/pollution">Basic</a></li>
+						<li class="is-active"><a href="/pollution/custom">Custom</a></li>
+						<li class="is-active" style=".hero.is-dark .tabs a{color: #111};">
+
+
+
+
+
+							<div class="modal" id="myModal">
+								<div class="modal-background">
+								</div>
+								<div class="modal-card" id="myModal">
+									<header class="modal-card-head" id="myModal">
+										<p class="modal-card-title">What this application does and how to use it</p>
+										<button class="delete" aria-label="close" data-bulma-modal="close"></button>
+									</header>
+									<section class="modal-card-body">
+
+
+										<div class="content has-text-black">
+
+											<p>This is application takes specified stations data with help of airly
+												service and displays it. <br>
+												You can specify and add airly stations or your own (configured before)
 											</p>
-											
-											<h3>Adding public station - <a href="https://airly.org/map/en#50.289934,18.659788,i9865"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> station example</a> </h3>
 
-											<p>You can add public station by specifying its coordinates from airly service </p>	
-											<p>The coordinates to add station appear in the link - example from above <br>latitude: 50.289934 longitude: 18.659788 </p>
+											<p>As the station uses external service before starting you will need to
+												<br>
+												- Register on airly.com service to obtain API key to use public stations
+												<br>
+												- Register on this site in order to have your accont save your stations
+												data
+											</p>
+
+											<h3>Adding public station - <a
+													href="https://airly.org/map/en#50.289934,18.659788,i9865"
+													style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0">
+													station example</a> </h3>
+
+											<p>You can add public station by specifying its coordinates from airly
+												service </p>
+											<p>The coordinates to add station appear in the link - example from above
+												<br>latitude: 50.289934 longitude: 18.659788
+											</p>
 
 											<p class="image ">
 												{% load static %}
-												<img src="{% static '/pollution/add_station_cords.PNG' %}" alt="My image">
+												<img src="{% static '/pollution/add_station_cords.PNG' %}"
+													alt="My image">
 											</p>
 
-											<p>You can also specify the City that you want a station from and application <br> will choose a station for you</p>
+											<p>You can also specify the City that you want a station from and
+												application <br> will choose a station for you</p>
 
 											<p class="image ">
 												{% load static %}
-												<img src="{% static '/pollution/add_station_city.PNG' %}" alt="My image" style="width: 60%">
+												<img src="{% static '/pollution/add_station_city.PNG' %}" alt="My image"
+													style="width: 60%">
 											</p>
 
 
-											<p>*For now not all stations are supported: <br> the ones without a name or data will get rejected by application</p>
-										
+											<p>*For now not all stations are supported: <br> the ones without a name or
+												data will get rejected by application</p>
+
 											<h3>Custom station configuration</h3>
-											<p>The custom station can be build using Raspberry Pi and Nova Fitness SDS011 sensor</p>
-											<p>Instruction on how to configure your custom station can be found 
-												<a href="https://github.com/110kc3/pi_data_taker"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> here</a> </p>
+											<p>The custom station can be build using Raspberry Pi and Nova Fitness
+												SDS011 sensor</p>
+											<p>Instruction on how to configure your custom station can be found
+												<a href="https://github.com/110kc3/pi_data_taker"
+													style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0">
+													here</a>
+											</p>
 
-											
+
 
 											<h3>Adding custom station</h3>
-											<p>Before connecting your custom station to the application you will need <br>
-												Station IP address <br> 
-												Port on what application on your station listens to</p>
+											<p>Before connecting your custom station to the application you will need
+												<br>
+												Station IP address <br>
+												Port on what application on your station listens to
+											</p>
 											<p>This data data can be put into form as shown bellow:</p>
 
 											<p class="image ">
 												{% load static %}
-												<img src="{% static '/pollution/add_station_custom.PNG' %}" alt="My image" style="width: 100%">
+												<img src="{% static '/pollution/add_station_custom.PNG' %}"
+													alt="My image" style="width: 100%">
 											</p>
 
-											
+
 											<h4>Links</h4>
-											<p> <a href="https://airly.org/map/en#50.289934,18.659788,i9865"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> Airly.com service</a> </p>
-											<p> <a href="https://github.com/110kc3/pi_data_taker"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> Custom station code and configuration </a> </p>
-											<p> <a href="https://github.com/110kc3/pi_data_taker"  style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0"> This application code</a> </p>
-											
+											<p> <a href="https://airly.org/map/en#50.289934,18.659788,i9865"
+													style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0">
+													Airly.com service</a> </p>
+											<p> <a href="https://github.com/110kc3/pi_data_taker"
+													style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0">
+													Custom station code and configuration </a> </p>
+											<p> <a href="https://github.com/110kc3/pi_data_taker"
+													style="display: inline; color: #3273dc; border-bottom-color: white; padding: 0">
+													This application code</a> </p>
+
 
 										</div>
-									
-								</section>
 
-								
-								<!-- 
+									</section>
+
+
+									<!-- 
 									<h3>1. Register on airly service <a href="https://developer.airly.org/register">here</a></p> </h3>
 									<p>
 									In field USAGE DESCRIPTION you can write:
@@ -200,49 +266,47 @@
 						
 							-->
 
-								<footer class="modal-card-foot">
-								<!-- <button class="button is-success">Save changes</button> -->
-								<button class="button is-success" data-bulma-modal="close">Ok</button>
-								</footer>
+									<footer class="modal-card-foot">
+										<!-- <button class="button is-success">Save changes</button> -->
+										<button class="button is-success" data-bulma-modal="close">Ok</button>
+									</footer>
+								</div>
 							</div>
-						</div>
 
-						<button id="modal_button" class = "button is-primary p-2">What this application does</button>
-										
-				
-				</li>
-				</ul>
-			</div>
+							<button id="modal_button" class="button is-primary p-2">What this application does</button>
+
+
+						</li>
+					</ul>
+				</div>
 			</nav>
 		</div>
-		
+
 	</section>
 
 
-	<section class = "hero is-info">
-		<div class = "container">
-			<h2 class = "subtitle">
+	<section class="hero is-info">
+		<div class="container">
+			<h2 class="subtitle">
 				{% if messages %}
 				<ul class="messages">
 					{% for message in messages %}
-					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-					{% endfor %}
+					<li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+						{% endfor %}
 				</ul>
 				{% endif %}
 
 				<!-- JS script to make messages disapear after some time -->
-				<script
-					src="https://code.jquery.com/jquery-3.4.1.min.js"
-					integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-					crossorigin="anonymous"></script>
+				<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+					integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
-					<script text="javascript">
-						setTimeout(fade_out, 3000);
-						function fade_out() {
-							$(".messages").fadeOut().empty();
-						}
-						// $(".post-form")[0].reset(); // this is to reset the form 
-				</script> 
+				<script text="javascript">
+					setTimeout(fade_out, 3000);
+					function fade_out() {
+						$(".messages").fadeOut().empty();
+					}
+						// $(".post-form")[0].reset(); // this is to reset the form
+				</script>
 			</h2>
 		</div>
 
@@ -253,8 +317,8 @@
 	<div class="columns is-half is-centered">
 		<div class="column ">
 			<p class="bd-notification is-primary">
-			{% block content %}
-			{% endblock %}
+				{% block content %}
+				{% endblock %}
 			</p>
 		</div>
 
@@ -262,90 +326,106 @@
 
 		<!-- Script for closing popup window with info -->
 		<script>
-		class BulmaModal {
-			constructor(selector) {
-				this.elem = document.querySelector(selector)
-				this.close_data()
-			}
-			
-			show() {
-				this.elem.classList.toggle('is-active')
-				this.on_show()
-			}
-			
-			close() {
-				this.elem.classList.toggle('is-active')
-				this.on_close()
-			}
-			
-			close_data() {
-				var modalClose = this.elem.querySelectorAll("[data-bulma-modal='close'], .modal-background")
-				var that = this
-				modalClose.forEach(function(e) {
-					e.addEventListener("click", function() {
-						
-						that.elem.classList.toggle('is-active')
+			class BulmaModal {
+				constructor(selector) {
+					this.elem = document.querySelector(selector)
+					this.close_data()
+				}
 
-						var event = new Event('modal:close')
+				show() {
+					this.elem.classList.toggle('is-active')
+					this.on_show()
+				}
 
-						that.elem.dispatchEvent(event);
+				close() {
+					this.elem.classList.toggle('is-active')
+					this.on_close()
+				}
+
+				close_data() {
+					var modalClose = this.elem.querySelectorAll("[data-bulma-modal='close'], .modal-background")
+					var that = this
+					modalClose.forEach(function (e) {
+						e.addEventListener("click", function () {
+
+							that.elem.classList.toggle('is-active')
+
+							var event = new Event('modal:close')
+
+							that.elem.dispatchEvent(event);
+						})
 					})
-				})
+				}
+
+				on_show() {
+					var event = new Event('modal:show')
+
+					this.elem.dispatchEvent(event);
+				}
+
+				on_close() {
+					var event = new Event('modal:close')
+
+					this.elem.dispatchEvent(event);
+				}
+
+				addEventListener(event, callback) {
+					this.elem.addEventListener(event, callback)
+				}
 			}
-			
-			on_show() {
-				var event = new Event('modal:show')
-			
-				this.elem.dispatchEvent(event);
-			}
-			
-			on_close() {
-				var event = new Event('modal:close')
-			
-				this.elem.dispatchEvent(event);
-			}
-			
-			addEventListener(event, callback) {
-				this.elem.addEventListener(event, callback)
-			}
-		}
 
-		var btn = document.querySelector("#modal_button")
-		var mdl = new BulmaModal("#myModal")
+			var btn = document.querySelector("#modal_button")
+			var mdl = new BulmaModal("#myModal")
 
-		btn.addEventListener("click", function () {
-			mdl.show()
-		})
+			btn.addEventListener("click", function () {
+				mdl.show()
+			})
 
-		mdl.addEventListener('modal:show', function() {
-			console.log("opened")
-		})
+			mdl.addEventListener('modal:show', function () {
+				console.log("opened")
+			})
 
-		mdl.addEventListener("modal:close", function() {
-			console.log("closed")
-		})
+			mdl.addEventListener("modal:close", function () {
+				console.log("closed")
+			})
 
-		var btn_register = document.querySelector("#modal_button_register")
-		var mdl_register = new BulmaModal("#myModal_register")
+			var btn_register = document.querySelector("#modal_button_register")
+			var mdl_register = new BulmaModal("#myModal_register")
 
-		btn_register.addEventListener("click", function () {
-			mdl_register.show()
-		})
+			btn_register.addEventListener("click", function () {
+				mdl_register.show()
+			})
 
-		mdl_register.addEventListener('modal:show', function() {
-			console.log("opened")
-		})
+			mdl_register.addEventListener('modal:show', function () {
+				console.log("opened")
+			})
 
-		mdl_register.addEventListener("modal:close", function() {
-			console.log("closed")
-		})
+			mdl_register.addEventListener("modal:close", function () {
+				console.log("closed")
+			})
 
 
-			
+
 		</script>
 
 	</div>
-	</body>
+
+
+	<div id="wrapper">
+
+	</div>
+
+	<footer class="footer">
+		<div class="content has-text-centered">
+			<p>
+				<strong>Copyright</strong> by Kamil Choiński, contact at kamil.choinski.priv@gmail.com. The source code
+				is
+				licensed under
+				<a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License</a>
+			</p>
+		</div>
+	</footer>
+
 </body>
 
 </html>
