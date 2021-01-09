@@ -34,6 +34,7 @@ from register.models import Profile
 # test station port: 8082
 
 
+
 @login_required
 def index(request):
 
@@ -49,6 +50,7 @@ def index(request):
 
     api_users = Profile.objects.all()
     api_key = ''
+    city_found = False
 
     for api_user in api_users:
         print('user with id: ', request.user.id,
@@ -98,10 +100,12 @@ def index(request):
 
                 print(POST_copy['city_name'])
                 print(POST_copy['city_latitude'])
+                city_found = True
             except:
                 print('Geolocator API problem...')
                 messages.info(
-                    request, 'An exception occurred - Geolocator API problem')
+                    request, 'An exception occurred - Geolocator API (external service) problem')
+                city_found = False
 
         else:
             print("City latitude and longitude is not None")
@@ -122,80 +126,83 @@ def index(request):
                 city_geolocation = address.get('city', '')
 
                 POST_copy['city_name'] = city_geolocation
+                city_found = True
             except:
                 print('Geolocator API problem...')
                 messages.info(
-                    request, 'An exception occurred - Geolocator API problem')
+                    request, 'An exception occurred - Geolocator API (external service) problem')
+                city_found = False
 
-        # checking if specified city exists (is in API)
+        if city_found == True:
+            # checking if specified city exists (is in API)
+            check_for_city = requests.get(airly_api_url.format(city_latitude, city_longitude))
+        
 
-        check_for_city = requests.get(
-            airly_api_url.format(city_latitude, city_longitude))
+            # check_for_city.raise_for_status() #for later - each exception handled?
 
-        # check_for_city.raise_for_status() #for later - each exception handled?
+            converted_response = str(check_for_city.status_code)
+            print('City check response: ', converted_response)
+            
+            if converted_response == "200":
 
-        converted_response = str(check_for_city.status_code)
-        print('City check response: ', converted_response)
+                # Checking if there is data available at selected city
 
-        if converted_response == "200":
+                check_for_city = check_for_city.json()
+                # with open('response_check.json', 'w') as outfile:
+                #     json.dump(check_for_city, outfile)
 
-            # Checking if there is data available at selected city
+                try:
+                    # there are some sensors like: Zabrze that have only 4 indexes and none of them are temp/humid/pm
+                    # for now getting rid of them not to cause an error
 
-            check_for_city = check_for_city.json()
-            # with open('response_check.json', 'w') as outfile:
-            #     json.dump(check_for_city, outfile)
+                    print(check_for_city['current']['values'][5]['value'])
+                    # print(type((check_for_city['current']['values'][0]['value'])))
 
-            try:
-                # there are some sensors like: Zabrze that have only 4 indexes and none of them are temp/humid/pm
-                # for now getting rid of them not to cause an error
-
-                print(check_for_city['current']['values'][5]['value'])
-                # print(type((check_for_city['current']['values'][0]['value'])))
-
-            except:
-                print(
-                    "An exception occurred - sensor does not contain data or data is corrupted")
-                messages.info(
-                    request, 'An exception occurred - sensor does not contain data or data is corrupted')
-
-            else:
-
-                # print('City latitude before form assigning: ',
-                #       POST_copy['city_latitude'])
-
-                pub_date = datetime.datetime.now()
-                print(pub_date)
-                POST_copy['city_adding_date'] = pub_date
-
-                POST_copy['user'] = request.user.id
-
-                print(request.user.id)
-                print(POST_copy['user'])
-
-                form = CityForm(POST_copy)
-
-                # print('City latitude after form assigning: ',
-                #       POST_copy['city_latitude'])
-
-                # print('City latitude after form assigning: ',
-                #       form['city_latitude'])
-
-                if form.is_valid():
-                    print("Form is valid - saving in DB")
+                except:
+                    print(
+                        "An exception occurred - sensor does not contain data or data is corrupted")
                     messages.info(
-                        request, 'Received good response, adding to Database')
-
-                    form.save(commit=True)  # commiting our data to database
+                        request, 'An exception occurred - found sensor does not contain data or data is corrupted')
 
                 else:
-                    print("form is not valid")
-                    messages.info(request, 'Form is not valid')
-        else:
-            print("POST response is not 200 - error:", converted_response)
-            messages.info(
-                request, 'POST response is not 200 - error')
-            # add some kind of communicate for wrong city
-            # return HttpResponse("City not found")
+
+                    # print('City latitude before form assigning: ',
+                    #       POST_copy['city_latitude'])
+
+                    pub_date = datetime.datetime.now()
+                    print(pub_date)
+                    POST_copy['city_adding_date'] = pub_date
+
+                    POST_copy['user'] = request.user.id
+
+                    print(request.user.id)
+                    print(POST_copy['user'])
+
+                    form = CityForm(POST_copy)
+
+                    # print('City latitude after form assigning: ',
+                    #       POST_copy['city_latitude'])
+
+                    # print('City latitude after form assigning: ',
+                    #       form['city_latitude'])
+
+                    if form.is_valid():
+                        print("Form is valid - saving in DB")
+                        messages.info(
+                            request, 'Received good response, adding to Database')
+
+                        form.save(commit=True)  # commiting our data to database
+                        return redirect('/pollution')
+
+                    else:
+                        print("form is not valid")
+                        messages.info(request, 'Form is not valid')
+            else:
+                print("POST response is not 200 - error:", converted_response)
+                messages.info(
+                    request, 'POST response is not 200 - error')
+                # add some kind of communicate for wrong city
+                # return HttpResponse("City not found")
 
     form = CityForm()
 
@@ -331,6 +338,7 @@ def custom(request):
                     messages.info(
                         request, 'Received good response, adding to Database')
                     form.save(commit=True)  # commiting our data to database
+                    return redirect('/pollution/custom')
 
                 else:
                     print("form is not valid")
