@@ -1,19 +1,22 @@
-# python_weather_api
+# Python weather API
 
+This repo is management part of Weather station management system - executive part is on https://github.com/110kc3/pi_data_taker 
 
-## Prerequisites 
+but it can also be used as standalone system with usage only of publicly available stations.
+
+The application can be found on kchoinski.com page, but feel free to set up it on your own with the usage of this repo.
+
+## Prerequisites for local usage
 
 1. Installing python
 
 https://www.python.org/downloads/
-
 
 1.1 Add Python to the Windows Path
 https://geek-university.com/python/add-python-to-the-windows-path/
 
 1.2 Install pip
 python -m pip install --upgrade pip
-
 
 2. Installing django
 https://docs.djangoproject.com/en/3.1/intro/install/
