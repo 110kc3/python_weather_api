@@ -33,13 +33,10 @@ from register.models import Profile
 # test station ip: 192.168.0.29
 # test station port: 8082
 
-
-
 @login_required
 def index(request):
 
-    pollution_API_key = 'aV4cM5PIhRFvnfP4tiN1Cx2TAa8s1sf0'
-    #uickU1nHiAR1KFq8pYndm3SPLhNSZUAj
+    pollution_API_key = ''
 
     url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=4f651df2ff6276adea68dcbe6c969c94'
 
