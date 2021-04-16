@@ -23,7 +23,11 @@ https://docs.djangoproject.com/en/3.1/intro/install/
 
 pip install Django
 
-3. Installing used python packages
+3. Install virtual environment
+
+pip install virtualenv
+
+4. Installing used python packages
 
 https://medium.com/analytics-vidhya/how-to-generate-lat-and-long-coordinates-of-city-without-using-apis-25ebabcaf1d5
 
