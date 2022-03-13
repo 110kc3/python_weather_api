@@ -1,65 +1,47 @@
-# Python weather API
+## Table of contents
+* [General info](#general-info)
+* [Technologies](#technologies)
+* [Setup](#setup)
+* [License](#license)
 
+## General info
 This repo is management part of Weather station management system - executive part is on https://github.com/110kc3/pi_data_taker 
 
-but it can also be used as standalone system with usage only of publicly available stations.
+but it can also be used as standalone system with usage only of publicly available stations on https://airly.org/map/
 
-The application can be found on kchoinski.com page, but feel free to set up it on your own with the usage of this repo.
+The application was set-up on kchoinski.com page, hovewer it is disabled now. Feel free to set up it on your own with the usage of this repo.
 
-## Prerequisites for local usage
+App uses simple reqistration and login panel, hovewer it needs API key in order to use public stations https://developer.airly.org/en/register
 
-1. Installing python
+### Main panel view
+Stations can be added by specifing the city of weather sensor or exact coordinates.
+![image](https://user-images.githubusercontent.com/35073233/158072533-a7071998-bca1-4efb-8e47-c35a6d8f22a1.png)
 
-https://www.python.org/downloads/
+	
+## Technologies
+Project is created with:
+* Django version: 3.1.3
+* bulma version: 0.9.1
+* PyMySQL library version: 0.10.1
+* requests library version: 2.23.0
+* geopy library version: 2.0.0
+* nominatim library version: 0.1
 
-1.1 Add Python to the Windows Path
-https://geek-university.com/python/add-python-to-the-windows-path/
+## Setup
+To run this project, install it locally using pip on virtual environment:
 
-1.2 Install pip
-python -m pip install --upgrade pip
+```
+$ python -m pip install --upgrade pip
+$ pip install virtualenv
+$ virtualenv env
+$ env\scripts\activate
+$ pip install -r requirements.txt
+$ python manage.py runserver
+```
 
-2. Installing django
-https://docs.djangoproject.com/en/3.1/intro/install/
 
-pip install Django
 
-3. Install virtual environment
 
-pip install virtualenv
-
-4. Installing used python packages
-
-https://medium.com/analytics-vidhya/how-to-generate-lat-and-long-coordinates-of-city-without-using-apis-25ebabcaf1d5
-
-Nominatim and geopy - for geolocating user specified cities
-
-pip install geopy 
-
-pip install Nominatim
-
-pip install PyMySQL==0.10.1
-
-pip install requests
-
-pip install django-widget-tweaks
-
-pip install django-crispy-forms
-
-4. Run django server locally (The development server)
-
-cd /python_weather_api/dj_ango/pollution_master/
-
-virtualenv env
-
-env\scripts\activate
-
-pip install -r requirements.txt
-
-python manage.py makemigrations
-
-python manage.py migrate
-
-python manage.py runserver
 
 
 ## License
